@@ -1,0 +1,330 @@
+﻿<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Thống kê doanh thu trong tháng
+            </div>
+
+            <div class="card-body"><canvas id="dailyRevenue" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Thống kê doanh thu trong năm
+            </div>
+            <div class="card-body"><canvas id="monthlyRevenue" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header row justify-content-between" style="width: 102%">
+                <div class="col-auto">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Top sản phẩm bán chạy trong tuần
+                </div>
+                <form asp-action="Index" asp-controller="Home" id="search-date" class="col-auto">
+                    <input id="date" type="date" name="date" />
+                </form>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.TopsellingProductInWeek != null && ViewBag.TopsellingProductInWeek.Count > 0)
+                {
+                    <canvas id="topsellingweek" width="100%" height="40"></canvas>
+                }
+                else
+                {
+                    <p>Không có dữ liệu cho sản phẩm bán chạy trong tuần này.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                Top sản phẩm bán chạy trong tháng
+            </div>
+            <div class="card-body">
+                @if (ViewBag.TopsellingProductInMonth != null && ViewBag.TopsellingProductInMonth.Count > 0)
+                {
+                    <canvas id="topsellingmonth" width="100%" height="40"></canvas>
+                }
+                else
+                {
+                    <p>Không có dữ liệu cho sản phẩm bán chạy trong tháng này.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@* <div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Thống kê người dùng đăng nhập theo ngày
+            </div>
+
+            <div class="card-body"><canvas id="dailyAppgrowth" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Thống kê người dùng đăng nhập theo tháng
+            </div>
+            <div class="card-body"><canvas id="monthlyAppgrowth" width="100%" height="40"></canvas></div>
+        </div>
+    </div>
+</div> *@
+
+@section Scripts
+{
+    <script>
+        var dailyRevenueData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.RevenueByDay));
+        var monthlyRevenueData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.RevenueByMonth));
+        var TopslellingInWeekData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.TopsellingProductInWeek));
+        var TopslellingInMonthData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.TopsellingProductInMonth));
+        var dailyIncomeData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.IncomeByDay));
+        var monthlyIncomeData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.IncomeByMonth));
+        var dailyAppGrowthData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AppGrowthByDay));
+        var monthlyAppGrowthData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AppGrowthByMonth));
+        var maxRevenue = Math.max(...dailyRevenueData.map(data => data.Revenue));
+        var maxMonthlyRevenue = Math.max(...monthlyRevenueData.map(data => data.Revenue));
+        window.onload = function () {
+            
+
+            // Tạo biểu đồ doanh thu các ngày trong tháng
+            var ctx = document.getElementById("dailyRevenue").getContext('2d');
+            var myAreaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dailyRevenueData.map(data => {
+                        var date = new Date(data.Date);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        return day + '/' + month;
+                    }), // Các ngày trong tháng
+                    datasets: [{
+                        label: "Doanh thu",
+                        backgroundColor: "rgba(2,117,216,0.7)",
+                        borderColor: "rgba(2,117,216,1)",
+                        borderWidth: 1,
+                        data: dailyRevenueData.map(data => data.Revenue), // Doanh thu theo ngày
+                    },
+                    {
+                        label: "Lợi nhuận",
+                        backgroundColor: "rgba(92,184,92,0.7)",
+                        borderColor: "rgba(92,184,92,1)",
+                        borderWidth: 1,
+                        data: dailyIncomeData.map(data => data.TotalIncomeAfterDiscount), // Doanh thu theo ngày
+                    }],
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'category',
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 7,
+                                autoSkip: true
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: maxRevenue, // Doanh thu cao nhất
+                                maxTicksLimit: 5
+                            },
+                            gridLines: {
+                                color: "rgba(0, 0, 0, .125)",
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: true
+                    }
+                }
+            });
+            var ctx = document.getElementById("monthlyRevenue").getContext('2d');
+            var myAreaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyRevenueData.map(data => {
+                        var month = data.Month;
+                        var year = data.Year;
+                        return month + '/' + year;
+                    }), // Các ngày trong tháng
+                    datasets: [{
+                        label: "Doanh thu",
+                        backgroundColor: "rgba(2,117,216,0.7)",
+                        borderColor: "rgba(2,117,216,1)",
+                        borderWidth: 1,
+
+                        data: monthlyRevenueData.map(data => data.Revenue), // Doanh thu theo ngày
+                    }
+                        ,
+                    {
+                        label: "Lợi nhuận",
+                        backgroundColor: "rgba(92,184,92,0.7)",
+                        borderColor: "rgba(92,184,92,1)",
+                        borderWidth: 1,
+                        data: monthlyIncomeData.map(data => data.TotalIncomeAfterDiscount), // Doanh thu theo ngày
+                    }],
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'category',
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 7,
+                                autoSkip: true
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: maxRevenue, // Doanh thu cao nhất
+                                maxTicksLimit: 5
+                            },
+                            gridLines: {
+                                color: "rgba(0, 0, 0, .125)",
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: true
+                    }
+                }
+            });
+            if (TopslellingInWeekData && TopslellingInWeekData.length > 0) {
+                // Đảm bảo luôn có đủ 5 sản phẩm bằng cách thêm các sản phẩm giả nếu cần
+                while (TopslellingInWeekData.length < 5) {
+                    TopslellingInWeekData.push({ ProductName: "Chưa có", Quantity: 0 });
+                }
+                var shortenedLabelsWeek = TopslellingInWeekData.map(function (product) {
+                    if (product.ProductName.length > 10) {
+                        return product.ProductName.substring(0, 10) + '...';
+                    }
+                    return product.ProductName;
+                });
+                var ctx = document.getElementById("topsellingweek").getContext('2d');
+                var myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: shortenedLabelsWeek, // Tên sản phẩm bị cắt ngắn
+                        datasets: [{
+                            label: "Số lượng bán",
+                            backgroundColor: "rgba(2,117,216,1)",
+                            borderColor: "rgba(2,117,216,1)",
+                            data: TopslellingInWeekData.map(product => product.Quantity),
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                gridLines: {
+                                    color: "rgba(0, 0, 0, .125)",
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        plugins: { // Chuyển từ 'tooltips' sang 'plugins.tooltip'
+                            tooltip: {
+                                callbacks: {
+                                    title: function (tooltipItems) {
+                                        var index = tooltipItems[0].dataIndex; // Chú ý sử dụng dataIndex thay vì index                 
+                                        return TopslellingInWeekData[index].ProductName;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            // Biểu đồ sản phẩm bán chạy trong tháng
+            if (TopslellingInMonthData && TopslellingInMonthData.length > 0) {
+                // Đảm bảo luôn có đủ 5 sản phẩm bằng cách thêm các sản phẩm giả nếu cần
+                while (TopslellingInMonthData.length < 5) {
+                    TopslellingInMonthData.push({ ProductName: "Chưa có", Quantity: 0 });
+                }
+                var shortenedLabelsMonth = TopslellingInMonthData.map(function (product) {
+                    if (product.ProductName.length > 10) {
+                        return product.ProductName.substring(0, 10) + '...';
+                    }
+                    return product.ProductName;
+                });
+
+                var ctx = document.getElementById("topsellingmonth").getContext('2d');
+                var myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: shortenedLabelsMonth, // Tên sản phẩm bị cắt ngắn
+                        datasets: [{
+                            label: "Số lượng bán",
+                            backgroundColor: "rgba(2,117,216,1)",
+                            borderColor: "rgba(2,117,216,1)",
+                            data: TopslellingInMonthData.map(product => product.Quantity),
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                gridLines: {
+                                    color: "rgba(0, 0, 0, .125)",
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        plugins: { // Chuyển từ 'tooltips' sang 'plugins.tooltip'
+                            tooltip: {
+                                callbacks: {
+                                    title: function (tooltipItems) {
+                                        var index = tooltipItems[0].dataIndex; // Chú ý sử dụng dataIndex thay vì index
+                                        return TopslellingInMonthData[index].ProductName;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }          
+            document.getElementById("date").addEventListener("change", function () {
+                document.getElementById("search-date").submit();
+            });
+        }
+    </script>
+}

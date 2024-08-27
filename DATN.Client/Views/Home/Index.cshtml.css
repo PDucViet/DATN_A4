@@ -1,0 +1,11 @@
+﻿.box {
+    color: #fff
+}
+
+.time {
+    font-size: 22px;
+    background-color: #0313A1;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #fff
+}

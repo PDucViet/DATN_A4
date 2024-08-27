@@ -1,0 +1,49 @@
+﻿@model DATN.Core.ViewModel.NotificationVM.NotificationVM
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Thêm mới</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Notification" asp-action="Index">Admin</a></li>
+        <li class="breadcrumb-item active">Thêm mới</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form id="category-form" asp-action="Create" asp-controller="Notification" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label">Content</label>
+                    <textarea asp-for="Content" class="form-control" rows="5" id="nameInput"> </textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Subject" class="control-label">Subject</label>
+                    <textarea asp-for="Subject" class="form-control" rows="5" id="motaInput"> </textarea>
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Tạo mới" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="Notification" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#category-form").submit();
+    }
+    document.querySelector('form').addEventListener('submit', function (event) {
+        const inputField = document.getElementById('nameInput');
+        const inputMota = document.getElementById('motaInput');
+
+        // Trim the value of the input field
+        inputField.value = inputField.value.trim();
+        inputMota.value = inputMota.value.trim();
+    });
+</script>

@@ -1,0 +1,57 @@
+﻿@using DATN.Core.ViewModel.ProductVM
+@model List<ProductVM>
+
+@{
+    ViewData["Title"] = "List Product";
+    int stt = 0;
+}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+</style>
+@* <div>
+    <form asp-action="ListProduct" asp-controller="Cart">
+        <table class="table-bordered" style="padding: 10px;">
+            <thead></thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Giá mới</th>
+                <th> </th>
+            </tr>
+            <tbody>
+                
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(stt+=1)</td>
+                        <td>@item.Name</td>
+                        <td>@item.Price</td>
+                        <td>@item.NewPrice</td>
+                        <td>
+                            <a onclick="addToCart('@item.Id','@item.Name','@item.Price','@item.NewPrice')">Thêm vào giỏ hàng</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div> *@
+<script src="~/js/cart/CartTest.js"></script>

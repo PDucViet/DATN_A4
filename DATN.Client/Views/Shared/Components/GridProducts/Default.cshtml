@@ -1,0 +1,104 @@
+﻿@using System.Linq
+@using System.Globalization
+@model List<DATN.Core.ViewModel.ProductVM.ProductVM>
+
+@{
+    var initialProducts = Model.Take(5).ToList();
+    // var hiddenProducts = Model.Skip(5).Take(1).ToList();
+    var hiddenProductsJson = System.Text.Json.JsonSerializer.Serialize(Model); // Chuyển đổi danh sách sản phẩm còn lại thành JSON
+}
+
+<div class="gridProduct mt-2" style="margin-bottom:50px">
+    <div class="row ps-0 pe-0" id="productContainer" style="margin-left:0!important; margin-right:0!important">
+        @foreach (var product in initialProducts)
+        {
+            <div class="col-md-2 product-item align-items-center" style="width: 20%; padding-left: 0; padding-right: 0;">
+                <div class="card" style="border-radius: 0!important; height: 412px;">
+                    <img src="@product.Images.FirstOrDefault(p=>p.IsDefault==true).ImagePath" class="card-img-top" alt="@product.Name Image" style="height: 220px;">
+                    <div class="card-body">
+                        <div class="card-title text-ellipsis" style="line-height: 21px; height: 63px; font-size:14px;">@product.Name</div>
+                        <p class="card-text">
+                            <span style="position: relative; font-size:14px;color:#666;text-decoration:line-through">
+                                @String.Format(new CultureInfo("vi-VN"), "{0:N0}", product.ProductAttributes.FirstOrDefault(p=>p.IsDefault==true).SalePrice)đ
+                            </span>
+                            <strong style="font-size: 14px; color: #EB5757; background-color: #FFF0E9; margin-left: 8px;">-@(product.Discount)%</strong>
+                            <br />
+                            <span style="font-size:18px;" class="text-danger fw-bolder">@String.Format(new CultureInfo("vi-VN"), "{0:N0}", product.DefaultPrice)đ</span>
+                        </p>
+                        <div class="rating d-flex align-items-center">
+                            <span class="text-dark" style="padding-right: 8px; font-size:14px;">@product.Rating</span>
+                            <i class="fa fa-star" style="padding-right: 8px; font-size:14px;"></i>
+                            <p style="margin: 0; font-size: 14px; color: #999999;">(@product.RateCount)</p>
+                        </div>
+                    </div>
+                    <div product-id="@product.Id" class="product-detail">Xem chi tiết</div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.Count > 5)
+    {
+        <div class="text-center mt-3">
+            <button class="btn btn-outline-dark" id="loadMoreBtn">Xem thêm</button>
+        </div>
+    }
+</div>
+
+<script src="~/js/cart/CartTest.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var a = 0;
+        var productContainer = document.getElementById('productContainer');
+        var loadMoreBtn = document.getElementById('loadMoreBtn');
+        var products = @Html.Raw(hiddenProductsJson); // Lấy danh sách sản phẩm còn lại
+
+        // Đảm bảo hiddenProducts là một mảng hợp lệ
+        if (typeof(products) === 'string') {
+            products = JSON.parse(products);
+        }
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function () {
+                a+=5
+                let newHiddenProducts = products.slice(a, a+5)
+                newHiddenProducts.forEach(function (product) {
+                    var cardHtml = `
+                                <div class="col-md-2 product-item align-items-center" style="width: 20%; padding-left: 0; padding-right: 0;">
+                    <div class="card" style="border-radius: 0!important; height: 412px;">
+                                            <img src="${product.Images.find(p => p.IsDefault).ImagePath}" class="card-img-top" alt="${product.Name} Image" style="height: 220px;">
+                                    <div class="card-body">
+                                            <div class="card-title text-ellipsis" style="line-height: 21px; height: 63px; font-size:14px;">${product.Name}</div>
+                                        <p class="card-text">
+                                                    <span style="position: relative; font-size:14px;color:#666;text-decoration:line-through">
+                                                        ${new Intl.NumberFormat('vi-VN').format(product.ProductAttributes.find(p => p.IsDefault == true).SalePrice)}đ
+                                            </span>
+                                                <strong style="font-size: 14px; color: #EB5757; background-color: #FFF0E9; margin-left: 8px;">-${product.Discount}%</strong>
+                                            <br />
+                                                    <span style="font-size:18px;" class="text-danger fw-bolder">${new Intl.NumberFormat('vi-VN').format(product.DefaultPrice)}đ</span>
+                                        </p>
+                                        <div class="rating d-flex align-items-center">
+                                                <span class="text-dark" style="padding-right: 8px; font-size:14px;">${product.Rating}</span>
+                                                <i class="fa fa-star" style="padding-right: 8px; font-size:14px;"></i> <!-- Thẻ i tạo ra ngôi sao -->
+                                            <p style="margin:0;font-size:14px;color:#999999">(${product.RateCount})</p>
+                                        </div>
+                                    </div>
+                                         <div product-id="${product.Id}" class="product-detail">Xem chi tiết</div>
+                                </div>
+                            </div>`;
+                    productContainer.insertAdjacentHTML('beforeend', cardHtml); // Thêm sản phẩm vào cuối danh sách
+                });
+                if (a>= @Model.Count-1) {
+                    loadMoreBtn.style.display = 'none'; // Ẩn nút "Xem thêm" sau khi đã tải tất cả sản phẩm
+
+                }
+            });
+
+        }
+    });
+    var products = document.getElementsByClassName("product-detail")
+    for (product of products) {
+        product.addEventListener("click", (e) => {
+            var id = e.target.getAttribute("product-id")
+            location.href = `/product/edit?id=${id}`
+        })
+    }
+</script>

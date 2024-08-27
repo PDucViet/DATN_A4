@@ -1,0 +1,234 @@
+﻿@model DATN.Core.ViewModel.ProductVM.ProductEditViewModel
+
+@{
+
+var fullStars= (int)Math.Floor(@Model.CommentOverviewVm.AVGRatingStar);
+var halfStars= (int)Math.Round(@Model.CommentOverviewVm.AVGRatingStar);
+var currentPage = @Model.CommentOverviewVm.CurrentPage == 0 ? 1 : @Model.CommentOverviewVm.CurrentPage;
+int startPage = Math.Max(1, currentPage - 2);
+int endPage = Math.Min(Model.CommentOverviewVm.TotalPages, currentPage + 2);
+var currentFilterStar = @Model.CommentOverviewVm.StarRating;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+@* <script src="../wwwroot/js/Product/package.json"></script>
+<script src="../wwwroot/js/Product/sandbox.com"></script> *@
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Initialize Swiper -->
+
+<container>
+    <div class="container-fluid !direction !spacing">
+        <!-- Name product -->
+        
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8 off-set-2">
+                <div class="row ">
+                    <div class="col-lg-12">
+                        <h2 class="boxrate__title">@Model.CommentOverviewVm.GrandTotalCount đánh giá @Model.Product.Name</h2>
+
+                    </div>
+
+                    <div class="col-lg-6" style="border-right: 1px solid dimgray">
+                        <img src="/Images/Component/ListProduct/product3.webp" class="img-fluid" alt="...">
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="point d-flex m-2">
+                            <p class="fs-4 me-2 text-center" style="color: red; font-weight: bold;">@Model.CommentOverviewVm.AVGRatingStar</p>
+                            @for (int i = 0; i < fullStars; ++i)
+                            {
+                                <i class="bi bi-star-fill fs-3" style="color: orange;"></i>
+                            }
+                            @for (int i = fullStars; i < halfStars; ++i)
+                            {
+                                <i class="bi bi-star-half fs-3" style="color: orange;"></i>
+                            }
+                        </div>
+                        <div class="timeline-star mb-2 mt-2">
+
+                            <div class="mb-1">
+                                <span>5 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                <span class="progress ">
+
+                                    <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count5Star%" aria-valuenow="@Model.CommentOverviewVm.Count5Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count5Star%</span>
+                                </span>
+                            </div>
+                            <div class="mb-1">
+                                <span> 4 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                <span class="progress mb-1">
+
+                                    <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count4Star%" aria-valuenow="@Model.CommentOverviewVm.Count4Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count4Star%</span>
+                                </span >
+                            </div>
+
+                            <div class="mb-1">
+                                <span> 3 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                <span class="progress">
+                                    <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count3Star%" aria-valuenow="@Model.CommentOverviewVm.Count3Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count3Star%</span>
+                                </span>
+                            </div>
+                            <div class="mb-1">
+                                <span> 2 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                <span class="progress mb-1">
+
+                                    <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count2Star%" aria-valuenow="@Model.CommentOverviewVm.Count2Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count2Star%</span>
+                                </span>
+                            </div>
+                            <div class="mb-1">
+                                <span> 1 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                <span class="progress">
+                                    <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count1Star%" aria-valuenow="@Model.CommentOverviewVm.Count1Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count1Star%</span>
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="mt-2 text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mt-2 filter-text">Lọc đánh giá</div>
+                    </div>
+
+                    <div class="col-12 mt-2 mb-4 d-flex">
+                        <span class="filter-all rating @(currentFilterStar==0?"filter-active":"")" data-param="0" data-paramprod="@Model.Product.Id">
+                            Tất cả
+                        </span>
+                        <span class="filter-star rating @(currentFilterStar==5?"filter-active":"")" data-param="5" data-paramprod="@Model.Product.Id">
+                            <span >5 <i class="bi bi-star-fill me-2 voted"></i></span>
+                        </span>
+                        <span class="filter-star rating @(currentFilterStar==4?"filter-active":"")" data-param="4" data-paramprod="@Model.Product.Id">
+                            <span data-pram="4" class="">4 <i class="bi bi-star-fill me-2 voted"></i></span>
+                        </span>
+                        <span class="filter-star rating @(currentFilterStar==3?"filter-active":"")" data-param="3" data-paramprod="@Model.Product.Id">
+                            <span data-pram="3" class="">3 <i class="bi bi-star-fill me-2 voted"></i></span>
+                        </span>
+                        <span class="filter-star rating @(currentFilterStar==2?"filter-active":"")" data-param="2" data-paramprod="@Model.Product.Id">
+                            <span data-pram="2" class="">2 <i class="bi bi-star-fill me-2 voted"></i></span>
+                        </span>
+                        <span class="filter-star rating @(currentFilterStar==1?"filter-active":"")" data-param="1" data-paramprod="@Model.Product.Id">
+                            <span data-pram="1" class="">1 <i class="bi bi-star-fill me-2 voted"></i></span>
+                        </span>
+                    </div>
+                    <div class="col-12">
+                        @foreach (var item in Model.CommentOverviewVm.CommentVms)
+                        {
+                            <div class="">
+                                <div class="d-flex flex-start align-items-center">
+                                    <img class="rounded-circle shadow-1-strong me-3"
+                                         src="~/Images/User/user-default-avatar.png" alt="avatar" width="60"
+                                         height="60"/>
+                                    <div>
+                                        <h6 class="fw-bold text-primary mb-1">@item.UserName</h6>
+                                        <p class="text-muted small mb-0">
+                                            @item.Date.ToString("dd/MM/yyyy") : @item.Date.ToString("HH:mm:ss")
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="mt-2">
+                                    @for (int root = 1; root <= 5; root++)
+                                    {
+                                        <i class="fas fa-star @(item.Rating >= root ? "voted" : "un-voted") vote-star"></i>
+
+                                    }
+                                </p>
+                                <p class="mt-2">
+                                    @item.Content
+                                </p>
+                            </div>
+                            <hr/>
+                        }
+                    </div>
+                    <div class="row ">
+                        <div class="col-12 d-flex justify-content-center">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item @((currentPage == 1) ? "disabled" : "")"  data-param="@(currentPage-1>=1?currentPage-1:1)" data-paramprod="@Model.Product.Id">
+                                        <a class="page-link link-paging" tabindex="-1" aria-disabled="true">
+                                            Previous
+                                        </a>
+                                    </li>
+
+                                    @if (currentPage > 3)
+                                    {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    }
+                                    @for (int pageIndex = startPage; pageIndex <= endPage; pageIndex++)
+                                    {
+                                        <li class="page-item "  data-param="@pageIndex" data-paramprod="@Model.Product.Id"><a class="page-link @(currentPage == pageIndex ? "active-page" : "")">@(pageIndex)</a></li>
+                                    }
+
+                                    @if (currentPage < Math.Ceiling(Model.CommentOverviewVm.TotalRecord / 10.0) - 2)
+                                    {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    }
+
+                                    <li class="page-item @((currentPage == Model.CommentOverviewVm.TotalPages) ? "disabled" : "")" data-param="@(currentPage+1 <=Model.CommentOverviewVm.TotalPages?currentPage+1:Model.CommentOverviewVm.TotalPages)" data-paramprod="@Model.Product.Id">
+                                        <a  class="page-link link-paging">
+                                            Next
+                                        </a>
+                                    </li>
+                                    @* @if (Model.CommentOverviewVm.TotalPages > 1) *@
+                                    @* { *@
+                                    @*     @for (int i = 1; i < Model.CommentOverviewVm.TotalPages; ++i) *@
+                                    @*     { *@
+                                    @*         <li class="page-item " data-param="@i" data-paramprod="@Model.Product.Id"><a class="page-link @(currentPage == i ? "active-page" : "")">@(i)</a></li> *@
+                                    @*     } *@
+                                    @* } *@
+                                    @* else *@
+                                    @* { *@
+                                    @*         <li class="page-item " data-param="1" data-paramprod="@Model.Product.Id"><a class="page-link @(currentPage == 1 ? "active-page" : "")">1</a></li> *@
+                                    @* } *@
+                                   
+                                 
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+               
+            <hr>
+        </div>
+    </div>
+    
+    
+        
+    <div></div>
+          
+</container>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.page-item').on('click', function (event) {
+            event.preventDefault();
+            var gotoPage = $(this).data('param');
+            var prodId = $(this).data('paramprod');
+            window.location.href = `ViewAllComment?id=${prodId}&pageIndex=${gotoPage}`
+        });
+        });
+        
+        $(document).ready(function() {
+        $('.rating').on('click', function (event) {
+            event.preventDefault();
+            
+            var prodId = $(this).data('paramprod');
+            var ratingStar = $(this).data('param');
+            window.location.href = `ViewAllComment?id=${prodId}&pageIndex=${0}&ratingStar=${ratingStar}`
+        });
+        });
+</script>

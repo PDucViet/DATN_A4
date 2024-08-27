@@ -1,0 +1,161 @@
+﻿@model DATN.Core.ViewModel.CategoryVM.CategoryAdminCreatLv
+
+@{
+	ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid px-4">
+	<h1 class="mt-4">Thêm mới </h1>
+	<ol class="breadcrumb mb-4">
+		<li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Category" asp-action="Index">Danh mục</a></li>
+		<li class="breadcrumb-item active">Thêm mới</li>
+	</ol>
+	<div class="row">
+		<div class="col-md-8">
+			<form id="category-form" asp-action="CreateLv2" asp-controller="Category" method="post">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Name" class="control-label">Tên </label>
+					<input asp-for="Name" class="form-control" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Description" class="control-label">Mô tả</label>
+					<textarea asp-for="Description" class="form-control" rows="5"> </textarea>
+					<span asp-validation-for="Description" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="ParentCategoryId" class="control-label">ParentId</label>
+					<select id="ListParentIdLv1" asp-for="ParentCategoryId" class="form-control">
+						@foreach (var item in ViewBag.CategoryLv1)
+						{
+							<option value="@item.Id">@item.Name</option>
+						}
+					</select>
+					<!-- Button trigger modal -->
+					<button type="button" class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						Tạo Category Lv 1
+					</button>
+					<div class="form-group">
+						<label asp-for="RangerId" class="control-label">Ranger Id</label>
+						@foreach (var item in ViewBag.ListRangerName)
+						{
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="RangerId" value="@item.Id" id="ranger-@item.Id">
+								<label class="form-check-label" for="ranger-@item.Id">
+									@item.Name
+								</label>
+							</div>
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<input type="submit" id="target-btn" value="Tạo mới" class="btn btn-success m-4" />
+					<a asp-action="CategoryLv2" asp-controller="Category" class="btn btn-secondary m-4">Trở lại</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="myForm" enctype="multipart/form-data">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Tạo mới </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label">Tên </label>
+						<input name="Name" class="form-control" />
+
+					</div>
+					<div class="form-group">
+						<label name="Description" class="control-label">Mô tả</label>
+						<textarea name="Description" class="form-control" rows="5"> </textarea>
+
+					</div>
+					<div class="form-group">
+						<label asp-for="ParentCategoryId" class="control-label">ParentId</label>
+						<select id="ListParentIdLv0" asp-for="ParentCategoryId" class="form-control">
+							@foreach (var item in ViewBag.CategoryLv0)
+							{
+								<option value="@item.Id">@item.Name</option>
+							}
+						</select>
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+					<button id="myBtn1" type="button" class="btn btn-primary">Tạo mới</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	const targetBtn = document.getElementById('target-btn');
+
+	function disableButton() {
+		targetBtn.disabled = true;
+		$("#category-form").submit();
+	}
+
+	document.getElementById("myBtn1").addEventListener('click', function () {
+		console.log(1)
+		var form = document.getElementById('myForm');
+		var formData = new FormData(form);
+
+		fetch('/Admin/Category/CreateLv1', {
+			method: 'POST',
+			body: formData
+		})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok ' + response.statusText);
+				}
+
+				fetch("https://localhost:7095/api/Category/GetAllCategoryLevel1")
+					.then(response => response.json())
+					.then(data => {
+						//console.log(data);
+						var listPn = document.getElementById("ListParentIdLv1")
+						listPn.innerHTML = ""
+						for (var item of data.$values) {
+							var option = document.createElement("option")
+							option.setAttribute("value", item.id)
+							option.innerHTML = item.name
+							listPn.appendChild(option)
+							option.selected = true;
+						}
+						// ... code xử lý dữ liệu ...
+						$('#exampleModal').on('hidden.bs.modal', function () {
+							$('body').removeClass('modal-open');
+							$('.modal-backdrop').remove();
+							$('body').css('overflow', 'auto'); // Phục hồi trạng thái cuộn của màn hình
+						});
+
+						showToast('success', 'Tạo mới  thành công');
+					})
+
+				return response.json();
+			})
+			.then(data => {
+
+			})
+	})
+
+	function showToast(type, message) {
+		toastr[type](message);
+	}
+
+
+</script>

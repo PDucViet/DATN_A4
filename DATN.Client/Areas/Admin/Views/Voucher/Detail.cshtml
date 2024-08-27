@@ -1,0 +1,51 @@
+﻿@using DATN.Core.ViewModel.voucherVM
+@model VoucherVM
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Chi tiết</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Voucher" asp-action="Index">Admin</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Detail" id="category-form" asp-controller="Voucher" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Name</label>
+                    <input asp-for="Name" class="form-control" readonly />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                @if (Model.DiscountByPercent != null && Model.DiscountByPrice == 0)
+                {
+                    <div class="form-group">
+                        <label asp-for="DiscountByPercent" class="control-label">Giảm theo phần trăm</label>
+                        <input asp-for="DiscountByPercent" class="form-control" readonly />
+                        <span asp-validation-for="DiscountByPercent" class="text-danger"></span>
+                    </div>
+                }
+                else            
+                {
+                <div class="form-group">
+                    <label asp-for="DiscountByPrice" class="control-label">Giảm theo giá sản phẩm</label>
+                    <input asp-for="DiscountByPrice" class="form-control" readonly />
+                    <span asp-validation-for="DiscountByPrice" class="text-danger"></span>
+                </div>
+                }
+              
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Mô tả</label>
+                    <input asp-for="Description" class="form-control" readonly />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <a asp-action="Index" asp-controller="Voucher" class="btn btn-secondary my-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

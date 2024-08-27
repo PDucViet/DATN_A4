@@ -1,0 +1,61 @@
+.vote-star {
+    padding-right: 6px;
+}
+.voted {
+    color: #ff9f00;
+}
+.un-voted {
+    color: #eee;
+}
+.marked {
+    color: #0071e3;
+    cursor: pointer;
+  font-size: 12px;
+    margin-top: 22px;
+}
+.boxrate__title {
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 32px;
+    text-align: left;
+}
+.filter-star {
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    color: #f2994a;
+    cursor: pointer;
+    width: 65px;
+    display: block;
+    margin-right: 10px;
+    padding: 4px 12px;
+    transition: .3s;
+}
+.filter-all {
+    border: 1px solid #e5e5e5;
+    color: #333;
+    border-radius: 14px;
+    cursor: pointer;
+    display: block;
+    margin-right: 10px;
+    padding: 4px 12px;
+    transition: .3s;
+    width: 75px;
+}
+.filter-active {
+    border: 1px solid #0071e3 !important; 
+}
+.filter-text {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 18px;
+}
+.page-link {
+    color: black;
+}
+.active-page {
+    background: antiquewhite;
+    color: #0d6efd !important;
+}
+.page-item {
+    cursor:pointer;
+}

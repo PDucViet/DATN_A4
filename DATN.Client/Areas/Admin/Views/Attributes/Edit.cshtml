@@ -1,0 +1,74 @@
+﻿@model DATN.Core.ViewModel.ProductVM.AttributesVM
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h3>Sửa thuộc tính động</h3>
+<hr />
+<div class="row">
+    <div class="col-md-8 offset-md-2 ms-2">
+        <form asp-action="Edit">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h3>Thuộc tính</h3>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="@Model.Name" class="form-control form-control-lg" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-switch mb-3">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="@Model.IsActive" id="flexSwitchCheckDefault" />
+                            Hoạt động
+                        </label>
+                    </div>
+                    <div class="form-group form-check mb-3">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="@Model.IsShow" />
+                            Hiển thị
+                        </label>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Type" class="control-label"></label>
+                        <select asp-for="@Model.Type" class="form-control form-control-lg" asp-items="ViewBag.TypeAttibutes"></select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h3>Giá trị</h3>
+                    @foreach (var value in Model.attributeValues)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input type="hidden" asp-for="@value.AtributeValueId" />
+                        <div class="form-group mb-3">
+                            <label asp-for="@value.Value" class="control-label"></label>
+                            <input asp-for="@value.Value" class="form-control form-control-lg" />
+                            <span asp-validation-for="@value.Value" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-switch mb-3">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="@value.IsActive" id="flexSwitchCheckDefault" />
+                                Hoạt động
+                            </label>
+                        </div>
+                        <div class="form-group form-check mb-3">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="@value.IsShow" />
+                                Hiển thị
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group float-end">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-success" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>

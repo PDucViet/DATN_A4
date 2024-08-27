@@ -1,0 +1,15 @@
+E:\DATN_A2\DATN.Core\bin\Debug\net7.0\DATN.Core.deps.json
+E:\DATN_A2\DATN.Core\bin\Debug\net7.0\DATN.Core.runtimeconfig.json
+E:\DATN_A2\DATN.Core\bin\Debug\net7.0\DATN.Core.dll
+E:\DATN_A2\DATN.Core\bin\Debug\net7.0\DATN.Core.pdb
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.csproj.AssemblyReference.cache
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.AssemblyInfoInputs.cache
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.AssemblyInfo.cs
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.csproj.CoreCompileInputs.cache
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.sourcelink.json
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.dll
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\refint\DATN.Core.dll
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.pdb
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\DATN.Core.genruntimeconfig.cache
+E:\DATN_A2\DATN.Core\obj\Debug\net7.0\ref\DATN.Core.dll

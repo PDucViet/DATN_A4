@@ -1,0 +1,56 @@
+﻿@model DATN.Core.ViewModel.BrandVM.BrandCreatVM
+@{
+	ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid px-4">
+	<h1 class="mt-4">Chỉnh sửa danh mục</h1>
+	<ol class="breadcrumb mb-4">
+		<li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Brand" asp-action="Index">Brand</a></li>
+		<li class="breadcrumb-item active">Chỉnh sửa</li>
+	</ol>
+	<div class="row">
+		<div class="col-md-8">
+			<form asp-action="EditBrand" id="brand-form" asp-controller="Brand" enctype="multipart/form-data" method="post">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" asp-for="BrandId" />
+				<div class="form-group">
+					<label asp-for="Name" class="control-label">Name</label>
+					<input asp-for="Name" class="form-control input-name" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>		
+
+
+				<div class="form-group">
+					<label for="file" class="control-label">Ảnh</label>
+					<input id="file" name="Img" type="file" class="form-control" accept="image/*">
+					<img src="@Model.ImageUrl" style="width: 150px; height: auto;" />
+				</div>
+
+				<div class="form-group">
+					<input type="submit" id="target-btn" value="Lưu" class="btn btn-success m-4" />
+					<a asp-action="Index" asp-controller="Brand" class="btn btn-secondary m-4">Trở lại</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+	const targetBtn = document.getElementById('target-btn');
+
+	function disableButton() {
+		targetBtn.disabled = true;
+		$("#category-form").submit();
+	}
+	document.getElementById('brand-form').addEventListener('submit', (e) => {
+		var inputName = document.querySelector('.input-name');
+		// var inputDBPercent = document.querySelector('.input-DBPercent');
+		// var inputDBPrice = document.querySelector('.input-DBPrice');
+		//var inputMota = document.querySelector('.input-mota');
+
+		if (inputName.value == "" ) {
+			alert("Không được bỏ trống");
+			e.preventDefault()
+		}
+	})
+</script>

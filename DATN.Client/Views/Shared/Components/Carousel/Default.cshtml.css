@@ -1,0 +1,311 @@
+﻿/*.carousel-item{
+    display:flex;
+    justify-content:center
+}*/
+
+.background {
+    /*background-image: url('path/to/your/image.jpg');*/
+    background-image: url('../Images/Categories/bg.png');
+    background-size: cover; /*Đảm bảo hình nền bao phủ toàn bộ khu vực */
+    background-position: center; /* Căn giữa hình nền */
+    color: white; /* Đặt màu chữ để nhìn rõ trên nền */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Thêm đổ bóng để làm nổi bật chữ */
+    height: 400px; /* Đặt chiều cao của thẻ theo nhu cầu của bạn */
+    width: 100%; /* Đặt chiều rộng của thẻ div thành 100% */
+    display: flex; /* Sử dụng flexbox để căn giữa nội dung */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center;
+}
+/*Nút điều hướng*/
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000; /* Đảm bảo nút điều hướng hiển thị trên các hình ảnh */
+}
+
+.carousel-control-prev {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0,0,0,0.7);
+    left: -6px;
+}
+
+.carousel-control-next {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0,0,0,0.7);
+    right: -6px;
+}
+
+#carouselExampleIndicators {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 1200px;
+    /*padding-left: 165px;
+    padding-right: 165px;*/
+}
+/*bo góc carousel*/
+/*.carousel-inner .row .col {
+    border-radius: 20px;
+    overflow: hidden;
+}*/
+.slide-img-custom {
+    border-radius: 8px!important;
+}
+
+.custom-carousel-indicators {
+    /*position: absolute !important;
+    bottom: -20px !important;*/ /* Điều chỉnh giá trị này để thay đổi khoảng cách */
+    /*left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding-bottom: 1rem !important;*/ /* Padding bên dưới */
+
+    position: absolute !important;
+    bottom: -50px !important; /* Đưa chỉ báo về phía dưới cùng */
+    left: 0 !important;
+    right: 0 !important; /* Kéo rộng phần tử để căn giữa */
+    text-align: center !important; /* Căn giữa nội dung theo chiều ngang */
+    padding-bottom: 1rem !important; /* Thêm padding bên dưới nếu cần thiết */
+}
+
+    .custom-carousel-indicators button {
+        background-color: #000 !important; /* Màu nền cho nút */
+        border-radius: 50% !important; /* Hình tròn */
+        width: 12px !important;
+        height: 12px !important;
+        margin: 0 5px !important; /* Khoảng cách giữa các nút */
+        border: none !important; /* Loại bỏ viền mặc định */
+    }
+
+        .custom-carousel-indicators button.active {
+            background-color: #a0a0a0 !important; /* Màu nền cho nút đang hoạt động */
+        }
+
+/*Nav*/
+
+.button-icon img, .button-text {
+    display: inline !important; /* Hiển thị ảnh và chữ cùng một hàng */
+    vertical-align: middle !important; /* Canh giữa ảnh và chữ theo chiều dọc */
+}
+
+.dropdown-toggle::after { /* Ẩn mũi tên của dropdown toggle */
+    display: none !important;
+}
+
+.dropdown-menu { /* Tạo một khoảng trống phía trên của menu */
+    margin-top: 5px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* Giữ menu con sát với nút */
+}
+
+.custom-nav-link-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: 200;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .custom-nav-link-button:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-nav-link-button .button-icon {
+        width: 24px; /* Điều chỉnh kích thước ảnh nếu cần */
+        height: 24px; /* Điều chỉnh kích thước ảnh nếu cần */
+        margin-right: 5px; /* Khoảng cách giữa biểu tượng và văn bản */
+    }
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1; /* Màu nền khi hover vào mục con */
+}
+
+.nav-link {
+    color: black;
+    background-color: white;
+}
+    /* Đổi màu chữ khi hover */
+    .nav-link:hover .button-text {
+        color: black;
+    }
+/* Hiển thị viền xanh 3px bên trái khi hover vào danh mục con */
+.dropdown-item:hover {
+    border-left: 3px solid #1030e3;
+    padding-left: 12px; /* Để làm cho chữ không bị che khuất bởi viền */
+}
+/*danh mục con*/
+
+.nav {
+    padding: 10px;
+}
+
+.nav-link-button {
+    background: none;
+    border: 1px solid #ccc;
+    color: black;
+    text-decoration: none;
+    padding: 5px 10px;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 0; /* Loại bỏ bo góc */
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng khi hover */
+    opacity: 0.8; /* Đặt độ mờ */
+    font-weight: 450;
+    display: flex; /* Sử dụng flexbox */
+    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+    height: 50px;
+}
+
+.button-icon {
+    width: 30px; /* Đặt kích thước cho hình ảnh */
+    height: 30px; /* Để tự động điều chỉnh chiều cao */
+    margin-right: 5px; /* Khoảng cách giữa hình ảnh và chữ */
+    border-radius: 50%; /* Tạo khung hình tròn */
+    object-fit: cover; /* Đảm bảo ảnh không bị biến dạng khi thu nhỏ */
+}
+
+.button-text {
+    flex: 1; /* Chia tỷ lệ để chữ và hình ảnh đều chiếm không gian */
+    overflow: hidden; /* Ẩn phần dư thừa của chữ */
+    text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu chữ quá dài */
+    overflow: hidden; /* Ẩn phần dư thừa của chữ */
+    display: -webkit-box; /* Để sử dụng thuộc tính mở rộng */
+    -webkit-line-clamp: 2; /* Số dòng tối đa */
+    -webkit-box-orient: vertical; /* Chỉ định chiều dọc */
+    word-wrap: break-word; /* Phá vỡ từ khi cần thiết */
+}
+
+.nav-link-button:hover {
+    background-color: #d5d5d5;
+    color: black;
+    text-decoration: none;
+}
+
+.nav-link-button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.nav-link-button.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.nav-item {
+    display: inline-block; /* Đặt các mục menu nằm liền nhau */
+    margin: 0; /* Loại bỏ khoảng cách giữa các mục */
+    position: relative;
+}
+
+    .nav-item:not(:last-child) .nav-link-button {
+        border-right: none; /* Loại bỏ viền bên phải của các nút trừ nút cuối cùng */
+    }
+
+.all-categories {
+    margin-right: 10px; /* Khoảng cách bên phải của nút "Tất cả danh mục" */
+}
+
+.special-button {
+    border: none;
+    margin-right: 10px; /* Khoảng cách bên phải của nút đầu tiên */
+    font-weight: 550;
+}
+
+    .special-button:hover {
+        background-color: #cef1b6; /* Đổi màu nền khi hover */
+    }
+/*Topdealsoc*/
+.topdealsoc {
+    background-size: contain; /* Chỉ định kích thước hình nền dựa trên kích thước thực của ảnh */
+    background-position: center; /* Căn giữa hình nền */
+    color: white; /* Đặt màu chữ để nhìn rõ trên nền */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Thêm đổ bóng để làm nổi bật chữ */
+    height: 100px; /* Đặt chiều cao của thẻ theo nhu cầu của bạn */
+    width: 1200px; /* Đặt chiều rộng của thẻ div thành 100% */
+    display: flex; /* Sử dụng flexbox để căn giữa nội dung */
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center;
+    margin: 0 auto;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/*Card product*/
+.product {
+    width: 1200px;
+    background-color: #da8686;
+}
+
+.card-img-top {
+    height: auto; /* Tự động điều chỉnh chiều cao */
+    width: 100%; /* Đảm bảo chiều rộng ảnh bao phủ toàn bộ thẻ */
+    padding: 20px;
+    object-fit: contain; /* Đảm bảo ảnh không bị cắt */
+    transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1); /* Phóng to ảnh khi di chuột */
+}
+
+.text-decoration-line-through {
+    text-decoration: line-through;
+}
+
+.rating {
+    color: #ffcc00; /* Màu vàng cho các ngôi sao */
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000; /* Đảm bảo dropdown menu luôn hiển thị trên các phần tử khác */
+}
+
+.dropdown-menu-sub {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%; /* Hiển thị menu con bên phải của mục cha */
+    background-color: #f9f9f9;
+    min-width: 160px;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Đảm bảo dropdown menu con luôn hiển thị trên các phần tử khác */
+}
+
+    .dropdown-menu-sub li {
+        list-style-type: none; /* Ẩn dấu đầu dòng của các mục con */
+        margin-bottom: 5px; /* Khoảng cách giữa các mục con */
+    }
+
+        .dropdown-menu-sub li button {
+            background: none; /* Xóa nền cho button */
+            border: none; /* Xóa viền cho button */
+            cursor: pointer; /* Đổi con trỏ khi di chuột qua button */
+            display: block; /* Hiển thị button dạng block */
+            padding: 0; /* Xóa padding của button */
+            text-align: left; /* Căn lề trái cho text trong button */
+        }
+
+            .dropdown-menu-sub li button:hover {
+                text-decoration: none; /* Gạch chân khi di chuột qua button */
+            }
+
+.dropdown-menu li:hover .dropdown-menu-sub {
+    display: block;
+}

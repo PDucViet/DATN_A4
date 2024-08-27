@@ -1,0 +1,174 @@
+﻿.wrapdetail_art{
+    margin:0;
+    padding:0;
+    
+}
+.article {
+    margin-top: 0;
+    padding-top: 20px;
+    float: none;
+    display: table-cell;
+    vertical-align: top;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+body, input, button, option, textarea, label, select, legend, h1, h2, h3, h4, h5, h6, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    font: 14px / 18px Arial, Helvetica, sans-serif;
+    color: #333;
+}
+
+.article h1 {
+    display: block;
+    padding: 0 0 10px 0;
+    line-height: 1.3em;
+    font-size: 24px;
+    color: #000;
+    font-weight: 600;
+}
+
+.article .titlebigKMDMX {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+    .article .titlebigKMDMX span {
+        color: #a8a8a8;
+    }
+
+    .article .titlebigKMDMX .firstico:before {
+        content: "●";
+        padding-right: 3px;
+        padding-left: 3px;
+    }
+
+.boldh2ofcontentnews {
+    margin-top: 10px;
+}
+
+    .boldh2ofcontentnews h2 {
+        font-weight: bold;
+        font-size: 17px;
+        line-height: 1.4;
+    }
+
+.article p {
+    display: block;
+    text-rendering: geometricPrecision;
+    font-size: 16px;
+    color: #333;
+    line-height: 1.4;
+    margin: 12px 0;
+}
+
+.article img {
+    height: auto !important;
+    width: auto;
+}
+
+img {
+    max-width: 100%;
+}
+
+.boldh2ofcontentnews h3 {
+    font-size: 19px;
+    font-weight: bold;
+    margin-top: 15px;
+    clear: both;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.boldh2ofcontentnews a {
+    color: #4a90e2;
+}
+
+a {
+    text-decoration: none;
+    transition: .2s;
+}
+
+.article .infobox {
+    font-size: 16px;
+}
+
+.infobox {
+    margin: 10px auto;
+    padding: 20px;
+    border: 2px solid #c3e5f8;
+    text-align: left;
+    border-radius: 5px;
+    background-color: #dbedf9;
+    line-height: 22px;
+    clear: both;
+}
+
+.wrap_relate {
+    margin-top: 10px;
+}
+
+.clearfix {
+    display: block;
+}
+
+.article .likeshare {
+    float: left;
+    overflow: hidden;
+}
+
+    .article .likeshare .detail-fb {
+        float: left;
+        margin-right: 1px;
+    }
+
+
+
+
+.articlerelate {
+    padding-top: 20px;
+    display: table-cell;
+    width: auto;
+    vertical-align: top;
+    margin-left: auto;
+    margin-top: auto;
+}
+
+.stickmenow {
+    float: left;
+}
+
+.contentrelate li {
+    border-bottom: 1px solid #f4f4f4;
+    display: block;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+
+    .contentrelate li a img {
+        width: 120px;
+        margin-right: 10px;
+        float: left;
+    }
+
+    .contentrelate li a h3 {
+        font-weight: bold;
+        max-height: none;
+        font-size: 13px;
+    }
+
+    .contentrelate li a span {
+        color: #a8a8a8;
+    }
+
+
+
+
+.wrapdetail_art {
+    clear: both;
+    display: table;
+    max-width: 99%;
+    min-width: 980px;
+    margin: auto;
+}

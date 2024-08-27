@@ -1,0 +1,158 @@
+﻿@model DATN.Core.ViewModel.AttributeVM.AttributeDynamic.CreateAttributeVM
+
+<div class="container-fluid px-4">
+    <div class="row">
+        <div class="col-8"></div>
+        <h1 class="mt-4">Thêm thuộc tính</h1>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#attributeValueModal">Thêm giá trị</button>
+        </div>
+    </div>
+</div>
+<div class="row ms-2">
+    <div class="col-md-8">
+        <form id="category-form" asp-action="Create" asp-controller="Attributes" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Tên thuộc tính</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group form-switch align-content-around">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" id="flexSwitchCheckDefault" />
+                    Hoạt động
+                </label>
+            </div>
+            <div class="form-group form-check align-content-">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsShow" />
+                    Hiển thị
+                </label>
+            </div>
+          @*   <div class="form-group">
+                <label asp-for="Type" class="control-label">Chọn loại</label>
+                <select asp-for="Type" class="form-control" asp-items="ViewBag.TypeAttibutes"></select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="Value.AtributeValueId" class="control-label">Chọn thuộc tính</label>
+                <select asp-for="Value.AtributeValueId" class="form-control" asp-items="ViewBag.listAttributes"></select>
+                <span asp-validation-for="Value.AtributeValueId" class="text-danger"></span>
+            </div>
+            <div class="form-group float-end">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <button class="btn btn-success" asp-action="Index">Back to List</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="attributeValueModal" tabindex="-1" aria-labelledby="attributeValueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attributeValueModalLabel">Thêm giá trị thuộc tính</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attributeValueForm">
+                    <div class="form-group">
+                        <label for="value" class="control-label">Giá trị</label>
+                        <input type="text" id="value" name="value" class="form-control" required />
+                        <span id="valueError" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="isActive" name="isActive" class="form-check-input" /> Hoạt động
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="isShow" name="isShow" class="form-check-input" /> Hiển thị
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="createValueButton" class="btn btn-primary">Tạo mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thông báo kết quả -->
+<div id="resultMessage" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="resultMessageContent" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Thông báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("createValueButton").addEventListener("click", function () {
+        const valueInput = document.getElementById("value");
+        const valueError = document.getElementById("valueError");
+
+        // Clear previous error messages
+        valueError.innerText = '';
+
+        // Validate the input
+        if (!valueInput.value.trim()) {
+            valueError.innerText = 'Giá trị không được để trống';
+            return;
+        }
+
+        const value = valueInput.value.trim();
+        const isActive = document.getElementById("isActive").checked;
+        const isShow = document.getElementById("isShow").checked;
+
+        const data = {
+            Value: value,
+            IsActive: isActive,
+            IsShow: isShow
+        };
+
+        fetch('https://localhost:7095/api/AttributeValues/CreateValueDynamic', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw err; });
+                }
+            })
+            .then(result => {
+                showResultMessage('Thêm thành công');
+                const attributeValueModal = new bootstrap.Modal(document.getElementById('attributeValueModal'));
+                attributeValueModal.hide();
+                location.reload();
+            })
+            .catch(error => {
+                if (error && error.message) {
+                    showResultMessage(error.message);
+                    valueError.innerText = error.message.includes("Attribute value already exists and is active") ? "Giá trị đã tồn tại và đang hoạt động" : error.message;
+                } else {
+                    showResultMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+                }
+            });
+    });
+
+    function showResultMessage(message) {
+        const toastBody = document.querySelector('#resultMessage .toast-body');
+        toastBody.innerText = message;
+        const toast = new bootstrap.Toast(document.getElementById('resultMessageContent'));
+        toast.show();
+    }
+</script>

@@ -1,0 +1,190 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+a {
+    color: #0077cc;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+.nav-button {
+    border: .5px solid rgba(168,208,255,.38);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 16px;
+    height: 45.6px
+}
+
+    .nav-button:hover {
+        cursor: pointer;
+    }
+
+.nav-btn-none-border {
+    color: #fff;
+    height: 30px;
+    font-size: 12px;
+}
+
+    .nav-btn-none-border:hover {
+        cursor: pointer
+    }
+
+.separate:after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(168,208,255,.38);
+    margin: 0 12px
+}
+
+.nav-list {
+    color: #fff;
+    background-color: #4A90E2;
+    padding: 12px 0
+}
+
+    .nav-list li {
+        font-size: 14px
+    }
+
+.nav-menu {
+}
+
+    .nav-menu :hover {
+        cursor: pointer;
+    }
+
+.nav-list-item:hover {
+    cursor: pointer
+}
+
+.nav-menu:after {
+    content: "";
+    display: block;
+    width: 1px;
+    height: 16px;
+    background-color: #fff;
+    margin: 0 12px
+}
+
+.nav-menu-child-1 {
+/*    display: none;
+    position: absolute;
+    top: 28px;
+    left: 0;*/
+    background-color: #fff;
+    color: #000;
+    width: 250px;
+    font-size: 14px;
+    padding:0
+}
+
+    .nav-menu-child-1 ul {
+        padding: 0
+    }
+
+.nav-menu:before {
+    content: "";
+    display: block;
+    width: 150px;
+    height: 10px;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    z-index:999
+}
+.nav-menu:hover .nav-menu-child {
+    display: flex;
+    width:250px
+}
+.nav-menu:hover .nav-menu-child-2 {
+    display: none;
+}
+.nav-menu-child{
+    display:none
+}
+.nav-menu-child-1-title {
+    padding: 2px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.1)
+}
+.last-item{
+    border:none!important;
+}
+.nav-menu-child-1 i {
+    color: rgba(0,0,0,0.2)
+}
+
+.nav-menu-child-1-title:hover{
+    background-color:rgba(0,0,0,0.1)
+}
+
+.nav-menu-child-2 {
+    background-color: #fff;
+    margin:0;
+    display:none;
+    color:#000
+}
+.nav-menu-child-2-box p{
+    font-size:14px;
+    margin:8px 0;
+    padding:0;
+    color:#333
+}
+    .nav-menu-child-2-box p:hover {
+        color: #2f80ed
+    }
+.nav-menu-child-2-box i{
+    font-size:10px
+}
+.address-btn:hover {
+    background-color: #E9F4FB;
+    cursor: pointer;
+    border: none
+}
+.currentAddress {
+    background-color: #E9F4FB;
+    border:none
+}

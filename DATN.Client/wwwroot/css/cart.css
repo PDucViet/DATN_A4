@@ -1,0 +1,317 @@
+﻿section {
+    display: block;
+    width: 50%;
+    margin: auto;
+}
+
+.cart-container {
+    padding: 20px;
+}
+
+.yourCart {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.backHome {
+    font-size: 16px;
+    color: #288ad6;
+    text-decoration: none;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.middleCart {
+    display: block;
+    background: #fff;
+    box-shadow: 0 0 18px rgba(0, 0, 0, .12);
+    border-radius: 2px;
+    position: relative;
+}
+
+.listing-cart {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.item-cart:not(:first-child) {
+    border-top: 1px solid #e1e1e1
+}
+
+.item-cart {
+    display: flex;
+    align-items: center;
+    padding: 10px 30px;
+    box-sizing: border-box
+}
+
+.imgsp {
+    flex: 0 0 75px;
+    margin-right: 20px;
+}
+
+    .imgsp img {
+        width: 75px;
+        height: auto;
+        display: block;
+        border-radius: 5px;
+    }
+
+.delete-button-container {
+    width: 100%;
+    text-align: center;
+}
+
+.delete-button {
+    font-size: 14px;
+    color: #808080;
+    text-decoration: none;
+    margin-top: 5px;
+}
+
+.infosp {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.name-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.name-container a {
+    font-size: 14px;
+    color: #333;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.price-area {
+    font-size: 14px;
+    color: #f30c28;
+}
+
+.description-quantity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    width: 100px; /* Điều chỉnh chiều rộng của container */
+}
+
+    .quantity input {
+        width: 40px; /* Điều chỉnh chiều rộng của ô nhập số */
+        text-align: center;
+    }
+
+    .quantity button {
+        width: 30px; /* Điều chỉnh chiều rộng của nút */
+        padding: 5px; /* Điều chỉnh padding */
+        cursor: pointer;
+        border: none;
+        background-color: #f0f0f0;
+    }
+
+        .quantity button:hover {
+            background-color: #ccc;
+        }
+
+.total-provisional {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-customer {
+    border-top: 1px solid #e1e1e1;
+    padding: 20px 20px
+}
+
+.choosegender .form-check {
+    display: inline-block;
+    margin-right: 10px; /* Điều chỉnh khoảng cách giữa các radio button */
+}
+
+.fillinfo {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px; /* Khoảng cách giữa các hàng */
+}
+
+    .row input {
+        flex: 1;
+        margin-right: 5px; /* Khoảng cách giữa các input trong hàng */
+    }
+
+.choosegetgoods {
+    padding: 20px 10px
+}
+
+.filladdress {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+        .row .col > *:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+.finaltotal {
+    border-top: 1px solid #e1e1e1;
+    padding: 20px 10px;
+}
+
+.promotioncodebox_button {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .promotioncodebox_button:hover {
+        background-color: #e0e0e0;
+    }
+
+/*.promotioncodebox_button::before, .promotioncodebox_button::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-color: white;
+        border-radius: 50%;
+    }
+
+    .promotioncodebox_button::before {
+        left: 10px;
+    }
+
+    .promotioncodebox_button::after {
+        right: 10px;
+    }*/
+.arrow {
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.promotioncodebox_input {
+    display: none;
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.promotion_input .form-control {
+    width: calc(100% - 100px);
+    display: inline-block;
+}
+
+.promotion_input .btn {
+    width: 90px;
+    display: inline-block;
+    vertical-align: top;
+    border: none;
+    background-color: #ccc;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+    .promotion_input .btn:hover {
+        background-color: #007bff;
+    }
+
+.show {
+    display: block;
+}
+
+.price-box {
+    padding: 8px 10px 40px;
+    width: 100%
+}
+
+.labeltotal {
+    float: left;
+}
+
+.red-price {
+    float: right;
+    color: #f30c28;
+}
+
+.accumulatedpoint {
+    border-top: 1px solid #e1e1e1;
+    padding: 10px 10px 20px;
+    width: 100%
+}
+.labelpoint {
+    float: left;
+}
+
+.totalpoint {
+    float: right;
+}
+.acceptpolicy {
+    padding: 20px 10px 20px;
+    justify-content: flex-start;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+    .acceptpolicy input[type="checkbox"] {
+        margin-right: 10px;
+    }
+.submitorder {
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 10px;
+    border: 0;
+    text-align: center;
+    width: 100%;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    background: linear-gradient(180deg,#f79429,#f7712e);
+    text-transform: uppercase;
+    font-weight: bold;
+}

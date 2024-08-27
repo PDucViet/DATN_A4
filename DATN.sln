@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DATN.Core", "DATN.Core\DATN.Core.csproj", "{459C0458-F07C-4DAA-992F-25B61CC4D465}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DATN.Client", "DATN.Client\DATN.Client.csproj", "{E1ABE3E0-94CD-4BC5-BE32-81BA5E59CEC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DATN.API", "DATN.API\DATN.API.csproj", "{8FC0EED9-CFAE-4203-B0DE-5EF081192CC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{459C0458-F07C-4DAA-992F-25B61CC4D465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459C0458-F07C-4DAA-992F-25B61CC4D465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459C0458-F07C-4DAA-992F-25B61CC4D465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459C0458-F07C-4DAA-992F-25B61CC4D465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1ABE3E0-94CD-4BC5-BE32-81BA5E59CEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1ABE3E0-94CD-4BC5-BE32-81BA5E59CEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1ABE3E0-94CD-4BC5-BE32-81BA5E59CEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1ABE3E0-94CD-4BC5-BE32-81BA5E59CEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FC0EED9-CFAE-4203-B0DE-5EF081192CC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FC0EED9-CFAE-4203-B0DE-5EF081192CC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FC0EED9-CFAE-4203-B0DE-5EF081192CC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FC0EED9-CFAE-4203-B0DE-5EF081192CC1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80F91175-D7E3-4B6F-94C4-A3302D9539A5}
+	EndGlobalSection
+EndGlobal

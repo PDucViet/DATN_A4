@@ -1,0 +1,59 @@
+﻿@using DATN.Core.ViewModels;
+@using DATN.Core.ViewModels.UserViewModel;
+@using System.Globalization
+@model UserProfile
+
+@{
+
+}
+<section class="m-0 min-vh-100 pt-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="mb-0">Trang cá nhân</h2>
+        </div>
+        @if (Model != null)
+        {
+            <div class="card mb-4 d-flex flex-column justify-content-center">
+                <div class="p-3">
+                    <div class="center-vertically">
+                        <div class="rounded-circle mb-2">
+                            <div class="img-size-150-150 cover-container">
+                                <img style="width:150px;height:150px" class="img-fluid rounded-circle border-1-gray" src="~/Images/User/user-default-avatar.png" />
+                            </div>
+                        </div>
+                        <h6 class="fw-bold">@Model.UserVM.FullName</h6>
+                        <h6>
+                            <i class="fa-regular fa-envelope"></i>
+                            @Model.UserVM.Email
+                        </h6>
+                        <div class="d-flex flex-row">
+
+                            @if (Model.UserVM.Dob != null)
+                            {
+                                <h6>
+                                    <i class="fa-solid fa-cake-candles"></i>
+                                    @Model.UserVM.Dob?.ToString("dd/MM/yyyy")
+                                </h6>
+                            }
+                        </div>
+                        <div class="d-flex flex-row">
+                            @if (!String.IsNullOrEmpty(Model.UserVM.PhoneNumber))
+                            {
+                                <h6 class="me-4">
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                    @Model.UserVM.PhoneNumber
+                                </h6>
+                            }
+                        </div>
+                        <div class="text-end">
+                            <a asp-area="User" asp-controller="Profile" asp-action="Edit" class="btn btn-primary">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span id="btn-edit-text">Chỉnh sửa</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

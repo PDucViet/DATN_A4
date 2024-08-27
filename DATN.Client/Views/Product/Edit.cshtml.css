@@ -1,0 +1,22 @@
+.vote-star {
+    padding-right: 6px;
+}
+.voted {
+    color: #ff9f00;
+}
+.un-voted {
+    color: #eee;
+}
+.marked {
+    color: #0071e3;
+    cursor: pointer;
+  font-size: 12px;
+    margin-top: 22px;
+}
+.btn:hover{
+    
+}
+.btn-outline-primary:hover {
+    color: #2f80ed;
+    background-color:#fff
+}

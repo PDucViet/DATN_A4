@@ -1,0 +1,18 @@
+table.dataTable thead th, table.dataTable thead td {
+    padding: 0 !important;
+}
+table.dataTable thead th {
+    font-size: 14px;
+}
+table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    border-spacing: 0
+}
+.up-arrow {
+    cursor: pointer;
+}
+.down-arrow {
+    cursor: pointer;
+}

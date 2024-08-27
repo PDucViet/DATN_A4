@@ -1,0 +1,73 @@
+﻿@using DATN.Core.ViewModel.CategoryVM
+@model List<LanguageVM>
+@{
+    ViewData["Title"] = "Admin Page";
+    int stt = 0;
+}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Language</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Danh sách ngôn ngữ
+        </div>
+        <div class="card-body table-responsive">
+            <div class="d-flex mb-4">
+                <button class="btn btn-success me-2" id="btn">
+                    <a asp-action="Create" asp-area="Admin" asp-controller="Language" class="text-white text-decoration-none">
+                        <span style="font-size:20px; margin-right:5px"><i class="fa-solid fa-user-check"></i></span>Thêm mới
+                    </a>
+                </button>
+            </div>
+            <form id="form-search" asp-area="Admin" asp-controller="Language" asp-action="Index">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Name</th>
+                               
+                                <th style="width:25% !important">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@(stt += 1)</td>
+                                    <td>@item.Name</td>
+                               
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-warning text-decoration-none">Sửa</a>
+                                            <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-info text-decoration-none">Chi tiết</a>
+                                            @Html.ActionLink("Xóa", "Delete", new { id = item.Id }, new
+                                                {
+                                                    onclick = "return confirm('Bạn có chắc chắn muốn xóa không?');"
+                                                     ,
+                                                    @class = "btn btn-danger text-decoration-none"
+                                                })
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <h4 class="text-center">Không có hoàn cảnh nào</h4>
+                }
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+}

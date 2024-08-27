@@ -1,0 +1,38 @@
+﻿@model List<DATN.Core.ViewModel.MagazineVM.MagazineVM>
+@using DATN.Core.ViewModel.MagazineVM
+@{
+
+}
+<style>
+    .promo-container{
+        margin-left: 160px;
+        margin-right: 160px;
+        margin-top: 30px;
+    }
+</style>
+<div class="promo-container">
+    <div class="row">
+        @foreach (var magazine in Model)
+        {
+            <div class="col-md-6 promo-item" onclick="loadMagazineDetail(@magazine.MagazineId)">
+                <div class="card">
+                    <img src="@magazine.Image" class="card-img-top" alt="@magazine.Caption" style="width: auto; height: 282px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 style="height:63px;line-height:21px;font-weight:600" class="card-title">@magazine.Caption</h5>
+                        <p class="card-text">@magazine.CreateAt.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        function loadMagazineDetail(magazineId) {
+            window.location.href = '@Url.Action("Detail", "Magazine")' + '?magazineId=' + magazineId;
+        }
+    </script>
+}

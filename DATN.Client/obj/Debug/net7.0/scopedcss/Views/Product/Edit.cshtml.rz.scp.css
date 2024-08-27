@@ -1,0 +1,22 @@
+.vote-star[b-lrtkheyawv] {
+    padding-right: 6px;
+}
+.voted[b-lrtkheyawv] {
+    color: #ff9f00;
+}
+.un-voted[b-lrtkheyawv] {
+    color: #eee;
+}
+.marked[b-lrtkheyawv] {
+    color: #0071e3;
+    cursor: pointer;
+  font-size: 12px;
+    margin-top: 22px;
+}
+.btn:hover[b-lrtkheyawv]{
+    
+}
+.btn-outline-primary:hover[b-lrtkheyawv] {
+    color: #2f80ed;
+    background-color:#fff
+}

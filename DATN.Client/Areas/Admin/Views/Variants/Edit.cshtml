@@ -1,0 +1,277 @@
+﻿@model DATN.Core.ViewModel.ProductVM.AttributesVM
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h3>Sửa biến thể động</h3>
+<hr />
+<div class="container-fluid px-4">
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#attributeValueModal">Thêm giá trị</button>
+        </div>
+    </div>
+</div>
+<div class="row">   
+    <div class="col-md-8 offset-md-2 ms-4">
+        <form asp-action="Edit">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Thuộc tính</h3>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" id="attributeId" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-switch align-content-around">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsActive" id="flexSwitchCheckDefault" />
+                            Hoạt động
+                        </label>
+                    </div>
+                    <div class="form-group form-check align-content-">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsShow" />
+                            Hiển thị
+                        </label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h3>Giá trị</h3>
+                    @for (var i = 0; i < Model.attributeValues.Count; i++)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input type="hidden" asp-for="attributeValues[i].AtributeValueId" />
+                        <div class="form-group">
+                            <label asp-for="attributeValues[i].Value" class="control-label"></label>
+                            <input asp-for="attributeValues[i].Value" class="form-control" />
+                            <span asp-validation-for="attributeValues[i].Value" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-switch align-content-around">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="attributeValues[i].IsActive" id="flexSwitchCheckDefault" />
+                                Hoạt động
+                            </label>
+                        </div>
+                        <div class="form-group form-check align-content-">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="attributeValues[i].IsShow" />
+                                Hiển thị
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group float-end mt-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-success" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="attributeValueModal" tabindex="-1" aria-labelledby="attributeValueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attributeValueModalLabel">Thêm giá trị thuộc tính</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attributeValueForm">
+                    <div id="dynamic-fields">
+                        <div class="form-group">
+                            <label for="value1" class="control-label">Giá trị 1</label>
+                            <div class="input-group">
+                                <input type="text" id="value1" name="value1" class="form-control" required />
+                                <button type="button" class="btn btn-danger removeFieldButton">Xóa</button>
+                            </div>
+                            <span id="valueError1" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="addFieldButton" class="btn btn-secondary">Thêm ô input</button>
+                        <button type="button" id="createValueButton" class="btn btn-primary">Tạo mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="attributeValueModal" tabindex="-1" aria-labelledby="attributeValueModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attributeValueModalLabel">Thêm giá trị thuộc tính</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attributeValueForm">
+                    <div id="dynamic-fields">
+                        <div class="form-group">
+                            <label for="value1" class="control-label">Giá trị 1</label>
+                            <div class="input-group">
+                                <input type="text" id="value1" name="value1" class="form-control" required />
+                                <button type="button" class="btn btn-danger removeFieldButton">Xóa</button>
+                            </div>
+                            <span id="valueError1" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="addFieldButton" class="btn btn-secondary">Thêm ô input</button>
+                        <button type="button" id="createValueButton" class="btn btn-primary">Tạo mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thông báo kết quả -->
+<div id="resultMessage" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="resultMessageContent" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Thông báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.select2').select2();
+    });
+
+    document.getElementById("addFieldButton").addEventListener("click", function () {
+        const dynamicFields = document.getElementById("dynamic-fields");
+        const fieldCount = dynamicFields.getElementsByClassName("form-group").length + 1;
+        const newField = `
+                            <div class="form-group">
+                                <label for="value${fieldCount}" class="control-label">Giá trị ${fieldCount}</label>
+                                <div class="input-group">
+                                    <input type="text" id="value${fieldCount}" name="value${fieldCount}" class="form-control" required />
+                                    <button type="button" class="btn btn-danger removeFieldButton">Xóa</button>
+                                </div>
+                                <span id="valueError${fieldCount}" class="text-danger"></span>
+                            </div>
+                        `;
+        dynamicFields.insertAdjacentHTML('beforeend', newField);
+        addRemoveButtonEvent();
+    });
+
+    function addRemoveButtonEvent() {
+        const removeButtons = document.querySelectorAll(".removeFieldButton");
+        removeButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const formGroup = button.closest(".form-group");
+                const dynamicFields = document.getElementById("dynamic-fields");
+                if (dynamicFields.getElementsByClassName("form-group").length > 1) {
+                    formGroup.remove();
+                } else {
+                    showResultMessage("Phải có ít nhất một giá trị.");
+                }
+            });
+        });
+    }
+
+    document.getElementById("createValueButton").addEventListener("click", function () {
+        if (!confirm("Bạn có chắc chắn muốn tạo không?")) {
+            return;
+        }
+
+        const dynamicFields = document.getElementById("dynamic-fields").getElementsByClassName("form-group");
+        const values = [];
+        let valid = true;
+        const getAttributeId = document.getElementById("attributeId").value;
+
+        for (let i = 0; i < dynamicFields.length; i++) {
+            const input = dynamicFields[i].getElementsByTagName("input")[0];
+            const error = dynamicFields[i].getElementsByClassName("text-danger")[0];
+            const value = input.value.trim();
+            const attributeId = getAttributeId;
+
+            error.innerText = '';
+
+            if (!value) {
+                error.innerText = 'Giá trị không được để trống';
+                valid = false;
+            } else {
+                values.push({ Value: value, AttributeId: attributeId, errorElement: error });
+            }
+        }
+
+        if (!valid) return;
+
+        // Kiểm tra tồn tại giá trị
+        checkExistingValues(values).then(exists => {
+            if (exists) return;
+
+            fetch('https://localhost:7095/api/AttributeValues/CreateMultipleValueWhenUpdate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values.map(v => ({ Value: v.Value, AttributeId: v.AttributeId })))
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(err => { throw err; });
+                    }
+                })
+                .then(result => {
+                    showResultMessage('Thêm thành công');
+                    const attributeValueModal = new bootstrap.Modal(document.getElementById('attributeValueModal'));
+                    attributeValueModal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    if (error && error.message) {
+                        showResultMessage(error.message);
+                    } else {
+                        showResultMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+                    }
+                });
+        });
+    });
+
+    function checkExistingValues(values) {
+        return Promise.all(values.map(v => checkExistingValue(v)))
+            .then(results => {
+                const exists = results.some(result => result);
+                return exists;
+            });
+    }
+
+    function checkExistingValue(valueObj) {
+        return fetch(`https://localhost:7095/api/AttributeValues/CheckExistingValue?value=${encodeURIComponent(valueObj.Value)}`)
+            .then(response => {
+                if (response.status === 409) {
+                    valueObj.errorElement.innerText = "Giá trị đã tồn tại";
+                    return true;
+                }
+                return false;
+            });
+    }
+
+    function showResultMessage(message) {
+        const toastBody = document.querySelector('#resultMessage .toast-body');
+        toastBody.innerText = message;
+        const toast = new bootstrap.Toast(document.getElementById('resultMessageContent'));
+        toast.show();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        addRemoveButtonEvent();
+    });
+</script>

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<DATN.Core.ViewModel.CategoryVM.CategoryVM>
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+<div style="position:relative;margin-bottom:150px">
+    <img style="width:100%" src="~/Images/Home/big-banner.webp"/>
+    <div class="d-flex justify-content-center w-100" style="position:absolute; transform:translateY(-50%)">
+        @await Component.InvokeAsync("Carousel")
+    </div>
+</div>
+
+@foreach (var item in ViewBag.Promotions)
+{
+    <div>
+        @await Component.InvokeAsync("ListProduct",item.Id)
+    </div>
+    
+}
+<style>
+    .sticky-hide {
+        opacity: 0;
+    }
+
+    .sticky-banner {
+        transition: all ease 0.2s;
+    }
+</style>
+<div class="sticky-banner sticky-hide" style="position:fixed;top:195px;z-index:999;left:calc(((100vw - 1200px) / 2) - 105px);">
+    <img style="width:100%" src="https://cdnv2.tgdd.vn/mwg-static/common/Banner/2e/a9/2ea9325b4729be13e7dff683d650e869.png" />
+</div>
+<div class="sticky-banner sticky-hide" style="position:fixed;top:195px;z-index:999;right:calc(((100vw - 1200px) / 2) - 105px);">
+    <img style="width:100%" src="https://cdnv2.tgdd.vn/mwg-static/common/Banner/2e/a9/2ea9325b4729be13e7dff683d650e869.png" />
+</div>

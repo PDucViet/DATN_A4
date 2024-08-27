@@ -1,0 +1,84 @@
+﻿@model DATN.Core.ViewModels.UserViewModel.UserVM
+
+@{
+    ViewData["Title"] = "Sửa người dùng";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sửa người dùng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="User" asp-action="Index">Danh sách người dùng</a></li>
+        <li class="breadcrumb-item active">Sửa</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Edit" id="form-user" asp-controller="User" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input asp-for="PasswordHash" type="hidden" />
+                <div class="form-group">
+                    <label asp-for="FullName" class="control-label">Họ và tên</label>
+                    <input asp-for="FullName" class="form-control input-name" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control input-mail" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Dob" class="control-label">Ngày sinh</label>
+                    <input asp-for="Dob" class="form-control input-Date" type="date" />
+                    <span asp-validation-for="Dob" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
+                    <input asp-for="PhoneNumber" class="form-control input-Sdt" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label">Địa chỉ</label>
+                    <input asp-for="Address" class="form-control input-Address" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-4">
+                    <select class="form-select" asp-items="ViewBag.Roles" multiple aria-label="multiple select example" asp-for="Roles">
+                        <option selected>Hãy chọn chức vụ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control input-Descreption"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Sửa" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="User" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#form-submit").submit();
+    }
+    document.getElementById('form-user').addEventListener('submit', (e) => {
+        var inputName = document.querySelector('.input-name');
+         var inputEmail = document.querySelector('.input-mail');
+         var inputDate = document.querySelector('.input-Date');
+        var inputSdt = document.querySelector('.input-Sdt');
+        var inputAddress = document.querySelector('.input-Address');
+        var inputDescreption = document.querySelector('.input-Descreption');
+
+        if (inputName.value == "" || inputEmail.value == "" || inputDate.value == "" || inputSdt.value == "" || inputAddress.value == "" || inputDescreption.value == "") {
+            alert("Vui lòng nhập đầy đủ thông tin");
+            e.preventDefault()
+        }
+        
+    })
+</script>
+

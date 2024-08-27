@@ -1,0 +1,97 @@
+﻿@using DATN.Core.Enum
+@model DATN.Core.ViewModel.MagazineVM.MagazineVM
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Chỉnh sửa</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Magazine" asp-action="Index">Admin</a></li>
+        <li class="breadcrumb-item active">Chỉnh sửa</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Update1" id="category-form" asp-controller="Magazine" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>             
+                <input type="hidden" asp-for="MagazineId" />
+                <div class="form-group">
+                    <label asp-for="Caption" class="control-label">Caption</label>
+                    <input asp-for="Caption" class="form-control input_caption" id="captionInput" />
+                    <span asp-validation-for="Caption" class="text-danger" id="captionError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Trạng thái</label>
+                    <select class="form-control input_status" asp-for="Status">
+                        <option value="">--Chọn trạng thái--</option>
+                        @foreach (var status in Enum.GetValues(typeof(MagazineStatus)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label">Nội dung</label>
+                    <textarea asp-for="Content" id="editor" class="form-control input_content"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="file" class="control-label">Ảnh</label>
+                    <input id="file" name="Img" type="file" class="form-control input_img" accept="image/*">                  
+                    <img src="@Model.Image" style="width: 150px; height: auto;" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Lưu" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="Magazine" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#category-form").submit();
+    }
+    CKSource.Editor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+        document.querySelector('form').addEventListener('submit', function (event) {
+            const inputField = document.getElementById('captionInput');
+
+            // Trim the value of the input field
+            inputField.value = inputField.value.trim();
+
+            const trimmedValue = inputField.value;
+            const errorMessage = document.getElementById('captionError');
+
+            if (trimmedValue === '') {
+                event.preventDefault();  // Prevent form submission if the input is empty after trimming
+                errorMessage.textContent = 'Caption cannot be empty or contain only spaces.';
+                inputField.classList.add('is-invalid');
+            } else {
+                errorMessage.textContent = '';
+                inputField.classList.remove('is-invalid');
+            }
+        });
+    document.getElementById('category-form').addEventListener('submit', (e) => {
+        var inputCation = document.querySelector('.input_caption');
+        var inputImg = document.querySelector('.input_img');
+        var inputContent = document.querySelector('.input_content');
+        var inputStatus = document.querySelector('.input_status');
+        if (inputCation.value == "" || inputImg.value == "" || inputContent.value == "" || inputStatus.value=="") {
+            alert("Không được bỏ trống");
+            e.preventDefault()
+
+        }
+   
+    });
+</script>
+}
+
+

@@ -1,0 +1,49 @@
+﻿@model DATN.Core.ViewModel.TimeRangeVM.TimeRangeVM
+@{
+    ViewData["Title"] = "Update";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Chỉnh sửa</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="TimeRange" asp-action="Index">Khoảng giá</a></li>
+        <li class="breadcrumb-item active">Chỉnh sửa</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Update" id="category-form" asp-controller="TimeRange" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Tên khoảng giá</label>
+                    <input asp-for="Name" class="form-control" rows="5"> </input>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MinPrice" class="control-label">Từ</label>
+                    <input type="number" asp-for="MinPrice" class="form-control" rows="5"> </input>
+                    <span asp-validation-for="MinPrice" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MaxPrice" class="control-label">Đến</label>
+                    <input type="number" asp-for="MaxPrice" class="form-control" rows="5"> </input>
+                    <span asp-validation-for="MaxPrice" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Lưu" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="TimeRange" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#category-form").submit();
+    }
+</script>
+
+

@@ -1,0 +1,508 @@
+﻿@* @using DATN.Core.ViewModels.Paging
+@model DATN.Core.ViewModels.Paging.ProductPaging
+
+@{
+	int totalRecord = (int)Model.TotalRecord;
+	int totalPages = (int)Model.TotalPages;
+	int currentPage = Model.CurrentPage;
+	int pageSize = Model.PageSize;
+
+	int startPage = Math.Max(1, currentPage - 2);
+	int endPage = Math.Min(totalPages, currentPage + 2);
+
+	int startIndex = ((currentPage - 1) * pageSize) + 1;
+	int endIndex = (currentPage == totalPages) ? totalRecord : startIndex + pageSize - 1;
+	if (endIndex > totalRecord) endIndex = totalRecord;
+
+	int index = (currentPage - 1) * 10 + 1;
+	ViewData["Title"] = "Quản lý sản phẩm";
+	int stt = (currentPage - 1) * pageSize;
+}
+
+<div class="container-fluid px-4">
+	<div class="card mb-4">
+		<div class="card-header">
+			<i class="fas fa-table me-1"></i>
+			Danh sách
+		</div>
+
+		<div class="card-body table-responsive">
+
+			<button class="btn btn-success mb-4" id="btn">
+				<a asp-action="Create2"  class="text-white text-decoration-none">
+					<span style="font-size:20px; margin-right:5px"><i class="fa-solid fa-user"></i></span>Thêm mới
+				</a>
+			</button>
+
+			<form id="form-search" onsubmit="clearInput() asp-area="Admin" asp-controller="Products" asp-action="Index">
+				<input id="current-page" type="hidden" asp-for="CurrentPage" name="CurrentPage" />
+				<div class="mb-3 row justify-content-between">
+					<div class="col-5 d-flex">
+						<select asp-for="PageSize" onchange="setCurrentPage('1');" class="form-select-sm col-2">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="15">15</option>
+							<option value="20">20</option>
+						</select>
+						<div class="ms-1 col-10 d-flex">
+							<div class="col-10">
+								<input id="searchInput" type="text" asp-for="SearchTerm" class="input-left w-100" placeholder="Nhập Name" style="width: 30%">
+							</div>
+							<div class="col-2">
+								<button type="submit" class="btn btn-primary button-right">Tìm</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				@if (Model.Items.Count > 0)
+				{
+							@foreach (var item in Model.Items)
+							{
+						@*   var defaultImage = item.Images?.FirstOrDefault(img =>
+				img.IsDefault == true)?.ImagePath; *@
+						<div class="card">
+							<div class="row card-horizontal">
+								<div class="col-3">
+									<img src="@item.imagePath" class="img-fluid" alt="Oculus VR">
+								</div>
+								<div class="col">
+									<div class="row">
+										@if (item.Images.Count > 0)
+										{
+											@foreach (var image in item.Images)
+											{
+												if (image.IsDefault == false)
+												{
+													<img src="@image.ImagePath" class="img-fluid" style="width:100px; height:60px" alt="Oculus VR">
+												}
+
+											}
+										}
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">@item.Name</h5>
+										@* <p class="card-text text-muted">@item.Description</p> *@
+										<div class="row">
+											<div class="col">
+												<p class="mb-0"><strong>Số lượng</strong></p>
+												<p class="mb-0">@item.Quantity</p>
+											</div>
+											<div class="col">
+												<p class="mb-0"><strong>Giá</strong></p>
+												<p class="mb-0">@item.DefaultPrice</p>
+											</div>
+											<div class="col">
+												<p class="mb-0"><strong>Nhẫn hiệu</strong></p>
+												<p class="price mb-0">@item.BrandName</p>
+											</div>
+											<div class="col">
+												<p class="mb-0"><strong>Xuất sứ</strong></p>
+												<p class="price mb-0">@item.Origin.Description</p>
+											</div>
+											@*                                             <div class="col">
+									<p class="mb-0"><strong>Cập nhật lúc</strong></p>
+									<p class="price mb-0">@item.UpdateAt</p>
+									</div> *@
+											<div class="col">
+												<p class="mb-0"><strong>Trạng thái</strong></p>
+												<p class="price mb-0">@item.Status</p>
+											</div>
+											<div class="btn-group col">
+												<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-decoration-none">Chỉnh sửa</a> |
+												@* <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-decoration-none">Details</a> |
+										<button type="button" onclick="confirmDelete(@item.Id)" class="btn btn-danger text-decoration-none">Delete</button>  *@
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+								// index++;
+							}
+				}
+				else
+				{
+					<h4 class="text-center">
+						Không danh mục nào
+					</h4>
+				}
+				<div class="row d-flex justify-content-center align-content-center mt-3 p-0">
+					<div class="col d-flex flex-row">
+						<div class="center">
+							<span class="fst-italic">Hiện <strong>@(Model.Items.Count == 0 ? 0 : startIndex) - @endIndex</strong> trong <strong> @totalRecord</strong> bản ghi</span>
+						</div>
+					</div>
+					@if (totalPages > 1)
+					{
+						<ul class="pagination justify-content-end col m-0">
+							<li class="page-item @((currentPage == 1) ? "disabled" : "")">
+								<a onclick="event.preventDefault(); setCurrentPage('@(currentPage-1)')" class="page-link link-paging" asp-area="Admin" asp-controller="Category" asp-action="Index"
+								   asp-route-currentPage="@(Model.CurrentPage-1)" tabindex="-1" aria-disabled="true">Previous</a>
+							</li>
+
+							@if (currentPage > 3)
+							{
+								<li class="page-item disabled"><span class="page-link">...</span></li>
+							}
+
+							@for (int pageIndex = startPage; pageIndex <= endPage; pageIndex++)
+							{
+								<li class="page-item">
+									<a onclick="event.preventDefault(); setCurrentPage('@pageIndex')" class="page-link @(pageIndex == currentPage ? "link-active" : "") link-paging" asp-area="Admin" asp-controller="Category" asp-action="Index"
+									   asp-route-currentPage="@(Model.CurrentPage-1)">@pageIndex</a>
+								</li>
+							}
+
+							@if (currentPage < Math.Ceiling(totalRecord / 10.0) - 2)
+							{
+								<li class="page-item disabled"><span class="page-link">...</span></li>
+							}
+
+							<li class="page-item @((currentPage == totalPages) ? "disabled" : "")">
+								<a onclick="event.preventDefault(); setCurrentPage('@(currentPage + 1)')" class="page-link link-paging" asp-area="Admin" asp-controller="Category" asp-action="Index"
+								   asp-route-currentPage="@(Model.CurrentPage-1)">Next</a>
+							</li>
+						</ul>
+					}
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script>
+	function clearInput() {
+		document.getElementById('searchInput').value = '';
+	}
+</script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"> *@
+
+
+
+
+@model List<DATN.Core.ViewModel.ProductVM.ProductVM>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .card-horizontal {
+        display: flex;
+        flex: 1 1 auto;
+    }
+
+        .card-horizontal img {
+            width: 150px;
+            height: auto;
+        }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .card-body .row {
+            align-items: center;
+        }
+
+        .card-body .col {
+            margin-bottom: 0.5rem;
+        }
+</style>
+
+<!-- body -->
+<div class="row ms-2">
+    <div class="col">
+        <h2>Products</h2>
+    </div>
+    <!-- <div class="col">
+        <div class="btn-group" role="group" aria-label="Basic outlined example">
+            <button type="button" class="btn btn-outline-primary">Left</button>
+            <button type="button" class="btn btn-outline-primary">Middle</button>
+          </div>
+    </div> -->
+</div>
+
+<!-- product -->
+<div class="row">
+   @*  <div class="col-2">
+        <!-- Select 1 -->
+        <div class="accordion mb-3" id="mainAccordion1">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMain1">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMain1" aria-expanded="true" aria-controls="collapseMain1">
+                        Categories
+                    </button>
+                </h2>
+                <div id="collapseMain1" class="accordion-collapse collapse show" aria-labelledby="headingMain1">
+                    <div class="accordion-body">
+                        <div class="accordion" id="categoriesAccordion1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo1">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo1" aria-expanded="false" aria-controls="collapseTwo1">
+                                        Bags
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo1" class="accordion-collapse collapse" aria-labelledby="headingTwo1">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="bagsAccordion1">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingSubOne1">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubOne1" aria-expanded="false" aria-controls="collapseSubOne1">
+                                                        Handbags
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseSubOne1" class="accordion-collapse collapse" aria-labelledby="headingSubOne1">
+                                                    <div class="accordion-body">
+                                                        <!-- Nội dung bên trong danh mục con -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingSubTwo1">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubTwo1" aria-expanded="false" aria-controls="collapseSubTwo1">
+                                                        Backpacks
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseSubTwo1" class="accordion-collapse collapse" aria-labelledby="headingSubTwo1">
+                                                    <div class="accordion-body">
+                                                        <!-- Nội dung bên trong danh mục con -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Thêm các danh mục khác ở đây nếu cần -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Select 2 -->
+        <div class="accordion mt-3 mb-3" id="mainAccordion2">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMain2">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMain2" aria-expanded="true" aria-controls="collapseMain2">
+                        Categories
+                    </button>
+                </h2>
+                <div id="collapseMain2" class="accordion-collapse collapse show" aria-labelledby="headingMain2">
+                    <div class="accordion-body">
+                        <div class="accordion" id="categoriesAccordion2">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo2" aria-expanded="false" aria-controls="collapseTwo2">
+                                        Bags
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo2" class="accordion-collapse collapse" aria-labelledby="headingTwo2">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="bagsAccordion2">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingSubOne2">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubOne2" aria-expanded="false" aria-controls="collapseSubOne2">
+                                                        Handbags
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseSubOne2" class="accordion-collapse collapse" aria-labelledby="headingSubOne2">
+                                                    <div class="accordion-body">
+                                                        <!-- Nội dung bên trong danh mục con -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingSubTwo2">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubTwo2" aria-expanded="false" aria-controls="collapseSubTwo2">
+                                                        Backpacks
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseSubTwo2" class="accordion-collapse collapse" aria-labelledby="headingSubTwo2">
+                                                    <div class="accordion-body">
+                                                        <!-- Nội dung bên trong danh mục con -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Thêm các danh mục khác ở đây nếu cần -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Select 3 -->
+        <div class="accordion mt-3 mb-3" id="mainAccordion3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMain3">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMain3" aria-expanded="true" aria-controls="collapseMain3">
+                        Select Size
+                    </button>
+                </h2>
+                <div id="collapseMain3" class="accordion-collapse collapse show" aria-labelledby="headingMain3">
+                    <div class="accordion-body">
+                        <div class="btn-group" role="group" aria-label="Size selection">
+                            <button type="button" class="btn btn-outline-secondary">XS</button>
+                            <button type="button" class="btn btn-outline-secondary">S</button>
+                            <button type="button" class="btn btn-outline-secondary">M</button>
+                            <button type="button" class="btn btn-outline-secondary">L</button>
+                            <button type="button" class="btn btn-outline-secondary">XL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Select 4 -->
+        <div class="accordion mt-3 mb-3" id="mainAccordion4">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMain4">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMain4" aria-expanded="true" aria-controls="collapseMain4">
+                        Select Color
+                    </button>
+                </h2>
+                <div id="collapseMain4" class="accordion-collapse collapse show" aria-labelledby="headingMain4">
+                    <div class="accordion-body">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="colorBlue">
+                            <label class="form-check-label" for="colorBlue">
+                                <span class="color-circle color-blue"></span> Blue
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="colorRed">
+                            <label class="form-check-label" for="colorRed">
+                                <span class="color-circle color-red"></span> Red
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="colorGreen">
+                            <label class="form-check-label" for="colorGreen">
+                                <span class="color-circle color-green"></span> Green
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="colorDark">
+                            <label class="form-check-label" for="colorDark">
+                                <span class="color-circle color-dark"></span> Dark
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> *@
+    <div class="col-10">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <div class="input-group mb-3 ">
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <span class="input-group-text" id="basic-addon2"><i class="bi bi-search"></i></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <p>
+                    <a asp-action="Create2" class="btn btn-success">Create New</a>
+                </p>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var item in Model)
+                    {
+                        @*   var defaultImage = item.Images?.FirstOrDefault(img =>
+                img.IsDefault == true)?.ImagePath; *@
+                        <div class="card">
+                            <div class="row card-horizontal">
+                                <div class="col-3">
+                                    <img src="@item.imagePath" class="img-fluid" alt="Oculus VR">
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        @if (item.Images.Count > 0)
+                                        {
+                                            @foreach (var image in item.Images)
+                                            {
+                                                if (image.IsDefault == false)
+                                                {
+                                                    <img src="@image.ImagePath" class="img-fluid" style="width:100px; height:60px" alt="Oculus VR">
+                                                }
+                                           
+                                            }
+                                        }
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Name</h5>
+                                        @* <p class="card-text text-muted">@item.Description</p> *@
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="mb-0"><strong>Số lượng</strong></p>
+                                                <p class="mb-0">@item.Quantity</p>
+                                            </div>
+                                                    <div class="col">
+                                            <p class="mb-0"><strong>Giá</strong></p>
+                                            <p class="mb-0">@item.DefaultPrice</p>
+                                            </div>
+                                            <div class="col">
+                                                <p class="mb-0"><strong>Nhẫn hiệu</strong></p>
+                                                    <p class="price mb-0">@item.BrandName</p>
+                                            </div>
+                                            <div class="col">
+                                                <p class="mb-0"><strong>Xuất sứ</strong></p>
+                                                <p class="price mb-0">@item.Origin.Description</p>
+                                            </div>
+@*                                             <div class="col">
+                                                <p class="mb-0"><strong>Cập nhật lúc</strong></p>
+                                                <p class="price mb-0">@item.UpdateAt</p>
+                                            </div> *@
+                                            <div class="col">
+                                                <p class="mb-0"><strong>Trạng thái</strong></p>
+                                                <p class="price mb-0">@item.Status</p>
+                                            </div>
+                                            <div class="btn-group col">
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-decoration-none">Chỉnh sửa</a> |
+                                                @* <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-decoration-none">Details</a> | *@
+                                                <button type="button" onclick="confirmDelete(@item.Id)" class="btn btn-danger text-decoration-none">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    async function confirmDelete(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa không?")) {
+            try {
+                const response = await fetch(`https://localhost:7095/api/Product/Delete?id=${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert("Xóa thành công");
+                    window.location.href = 'https://localhost:7134/Admin/products/Index';
+                } else {
+                    alert("Xóa thất bại");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Đã xảy ra lỗi");
+            }
+        }
+    }
+</script>
+

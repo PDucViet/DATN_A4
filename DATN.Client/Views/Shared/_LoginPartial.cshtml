@@ -1,0 +1,72 @@
+﻿@using DATN.Client.Helper
+@using DATN.Core.Models
+@using DATN.Client.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+@{
+    var userInfo = SessionHelper.GetObject<UserInfo>(Context.Session, "user");
+}
+<ul class="navbar-nav">
+    @if (userInfo != null)
+    {
+        <div class="dropdown nav-profile">
+            <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="avatar">
+                    <img style="width:30px" src="~/Images/User/user-default-avatar.png" alt="Profile" class="rounded-circle">
+                </div>
+            </a>
+            <ul class="dropdown-menu nav-menu-profile" aria-labelledby="dropdownMenuButton">
+                <li class="dropdown-header">
+                    @* <h6>@userInfo.Fullname</h6> *@
+                    <h6>@userInfo.Fullname</h6>
+                    <p style="margin-bottom:0!important" class="user-email">@userInfo.Email</p>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a asp-area="User" asp-controller="Profile" asp-action="Index" class="dropdown-item d-flex align-items-center">
+                        <i class="bi bi-person"></i>
+                        <span>Trang cá nhân</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="User" asp-controller="Profile" asp-action="ChangePassword" class="dropdown-item d-flex align-items-center">
+                        <i class="bi bi-pass"></i>
+                        <span>Đổi mật khẩu</span>
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a id="logoutForm" class="form-inline dropdown-item d-flex align-items-center" asp-area="" asp-controller="Authen" asp-action="LogOut">
+                        <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex">
+            <a style="text-decoration:none;color:#fff; margin-right:20px" asp-area="Identity" asp-page="/Account/Login" class="d-flex flex-column align-items-center justify-content-center">
+                <i class="fa-solid fa-user"></i>
+                <div>Đăng nhập</div>
+            </a>
+            <a style="text-decoration:none;color:#fff" asp-area="Identity" asp-page="/Account/Register" class="d-flex flex-column align-items-center justify-content-center">
+                <i class="fa-solid fa-user-plus"></i>
+                <div>Đăng ký</div>
+            </a>
+
+        </div>
+        @* <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
+        </li> *@
+    }
+</ul>

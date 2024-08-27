@@ -1,0 +1,100 @@
+﻿@using DATN.Core.ViewModel.voucherVM
+@model VoucherVM
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Update</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Voucher" asp-action="Index">Admin</a></li>
+        <li class="breadcrumb-item active">Update</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Update1" id="category-form" asp-controller="Voucher" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>             
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Name</label>
+                    <input asp-for="Name" class="form-control input-name" id="nameInput" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                @if (Model.DiscountByPercent != null && Model.DiscountByPrice == 0)
+                {
+                    <div class="form-group">
+                        <label asp-for="DiscountByPercent" class="control-label">Giảm theo phần trăm</label>
+                        <input asp-for="DiscountByPercent" class="form-control input-DBPercent" />
+                        <span asp-validation-for="DiscountByPercent" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="DiscountByPrice" class="control-label">Giảm theo giá sản phẩm</label>
+                        <input asp-for="DiscountByPrice" class="form-control input-DBPrice" />
+                        <span asp-validation-for="DiscountByPrice" class="text-danger"></span>
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Mô tả</label>
+                    <input asp-for="Description" class="form-control input-mota" id="motaInput" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Lưu" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="Voucher" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#category-form").submit();
+    }
+    document.querySelector('form').addEventListener('submit', function (event) {
+        const inputField = document.getElementById('nameInput');
+        const inputMota = document.getElementById('motaInput');
+
+        // Trim the value of the input field
+        inputField.value = inputField.value.trim();
+        inputMota.value = inputMota.value.trim();
+    });
+
+    //lấy form ra để check
+    document.getElementById('category-form').addEventListener('submit', (e) => {
+        var inputName = document.querySelector('.input-name');
+        var inputDBPercent = document.querySelector('.input-DBPercent');
+        var inputDBPrice = document.querySelector('.input-DBPrice');
+        var inputMota = document.querySelector('.input-mota');
+        if (!inputDBPrice) {
+            if (inputName.value == "" || inputDBPercent.value == "" || inputMota.value == "") {
+                alert("Không được bỏ trống");
+                e.preventDefault()
+            }
+            else if (inputDBPercent.value > 100 || inputDBPercent.value <0) {
+                alert("Phải nhập giá trị từ 0 đến 100");
+                e.preventDefault()
+            }
+
+        }
+        else if (!inputDBPercent) {
+            if (inputName.value == "" || inputDBPrice.value == "" || inputMota.value == "") {
+                alert("Không được bỏ trống");
+                e.preventDefault()
+            }
+            else if (inputDBPrice.value < 0) {
+                alert("Không được nhập giá trị âm");
+                e.preventDefault()
+            }
+        }
+        
+    });
+
+</script>
+
+

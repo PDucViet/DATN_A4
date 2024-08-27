@@ -1,0 +1,138 @@
+﻿@using System.Linq
+@using System.Globalization
+@model List<DATN.Core.ViewModel.ProductVM.ProductVM>
+
+@{
+    int itemsPerRow = 5; // Số lượng sản phẩm trên mỗi hàng
+    int pageSize = itemsPerRow; // Số lượng sản phẩm trên mỗi trang
+
+    // Kiểm tra nếu số sản phẩm <= 5
+    bool singleRow = Model.Count <= itemsPerRow;
+
+    // Điều chỉnh tổng số trang nếu có sản phẩm nhưng < pageSize
+    int totalPages = singleRow ? 1 : (int)Math.Ceiling((double)Model.Count / pageSize);
+
+    int hasProducts = Model.Count; // Kiểm tra có sản phẩm hay không
+}
+
+<div id="productCarousel" class="carousel slide p-1" style="width: 100%;">
+    <div class="carousel-inner">
+        @if (hasProducts > 0)
+        {
+            @for (int i = 0; i < totalPages; i++) // Tạo các trang carousel
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="row row-cols-1 row-cols-md-5 g-3 justify-content-center">
+                        @for (int k = i * pageSize; k < (i + 1) * pageSize; k++)  // hiển thị đúng số sản phẩm hoặc thẻ trống nếu thiếu sản phẩm 1 hàng để đảm bảo 1 hàng mỗi hàng 5sp
+                        {
+                            <div class="col p-0">
+                                @if (k < Model.Count)
+                                {
+                                    <div class="card" style="border-radius: 0!important;">
+                                        <img src="@Model[k].Images.FirstOrDefault(p=>p.IsDefault==true).ImagePath" class="card-img-top" alt="@Model[k].Name Image" style="height: 220px;">
+                                        <div class="card-body">
+                                            <div class="card-title text-ellipsis" style="line-height: 21px; height: 63px; font-size:14px;">@Model[k].Name </div>
+                                            <p class="card-text">
+                                                <span style="position: relative; font-size:14px;">
+                                                    @String.Format(new CultureInfo("vi-VN"), "{0:N0}", Model[k].DefaultPrice)đ
+                                                    <span style="content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background-color: rgba(0, 0, 0, 0.5); pointer-events: none;"></span>
+                                                </span>
+                                                <strong style="font-size:14px;color:#EB5757;background-color:#FFF0E9;margin-left:8px">-@(Model[k].Discount)%</strong>
+                                                <br />
+                                                <span style="font-size:18px;" class="text-danger fw-bolder">@String.Format(new CultureInfo("vi-VN"), "{0:N0}", Model[k].DefaultPrice)đ</span>
+                                            </p>
+                                            <div class="rating d-flex align-items-center">
+                                                <span class="text-dark" style="font-size:14px; padding-right: 8px;">@Model[k].Rating</span>
+                                                <i class="fa fa-star" style="font-size:14px; padding-right: 8px;"></i> <!-- Thẻ i tạo ra ngôi sao -->
+                                                <p style="margin:0;font-size:14px;color:#999999">(@Model[k].RateCount)</p>
+                                            </div>
+                                        </div>
+                                        <div product-id="@Model[k].Id" class="product-detail">Xem chi tiết</div>
+                                    </div>
+                                }
+                                else // Tạo div rỗng khi sản phẩm 1 hàng < 5
+                                {
+                                    <div class="card empty-card" style="border-radius: 0!important;">
+                                        <img src="" class="card-img-top" alt="Empty Product Image">
+                                        <div class="card-body">
+                                            <div class="card-title text-ellipsis" style="line-height: 21px; height: 63px">Không có sản phẩm</div>
+                                            <p class="card-text">
+                                                <span class="text-decoration-line-through"></span>
+                                                <br />
+                                                <span class="text-danger fw-bolder"></span>
+                                            </p>
+                                            <div class="rating">
+                                                <span class="text-dark">0</span>
+                                                <i class="fa fa-star"></i> <!-- Thẻ i tạo ra ngôi sao -->
+                                            </div>
+                                        </div>
+                                        @* <div product-id="@Model[k].Id" class="product-detail">Xem chi tiết</div> *@
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else // Nếu không có sản phẩm
+        {
+            <span class="text-light">Không có sản phẩm nào trong danh mục</span>
+        }
+    </div>
+    @if (!singleRow) // Số sản phẩm > 5 thì hiện 2 nút điều hướng
+    {
+        <button class="custom-carousel-prev position-absolute top-50 start-0 translate-middle-y ms-2" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+            <span class="custom-carousel-prev-icon" aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="custom-carousel-next position-absolute top-50 end-0 translate-middle-y me-2" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+            <span class="custom-carousel-next-icon" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    }
+</div>
+
+<style>
+    .card:hover .card-title {
+        color: #007bff; /* Màu xanh dương */
+    }
+
+    .custom-carousel-prev,
+    .custom-carousel-next {
+        width: 30px; /* Điều chỉnh kích thước theo ý muốn */
+        height: 60px;
+        background-color: #f8f9fa; /* Màu nền của nút */
+        border: 1px solid #dee2e6; /* Viền */
+        border-radius: 10px; /* Đường cong của góc */
+        opacity: 0.5; /* Đặt mặc định là độ mờ */
+        transition: opacity 0.3s ease;
+        border: none; /* Bỏ viền */
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Đổ bóng với độ mờ và kích thước tùy chỉnh */
+    }
+
+    .custom-carousel-prev-icon,
+    .custom-carousel-next-icon {
+        background-image: none; /* Loại bỏ hình ảnh mặc định */
+        color: black; /* Màu của icon */
+        opacity: 0.5; /* Đặt mặc định là độ mờ */
+    }
+
+    .custom-carousel-prev:hover,
+    .custom-carousel-next:hover {
+        opacity: 1; /* Chuyển đổi độ mờ khi hover */
+    }
+
+    #productCarousel:hover .custom-carousel-prev,
+    #productCarousel:hover .custom-carousel-next {
+        opacity: 0.9; /* Tăng độ mờ khi hover */
+    }
+
+    .empty-card {
+        visibility: hidden; /* Ẩn thẻ card rỗng nhưng vẫn giữ không gian */
+    }
+
+    .carousel-inner {
+        overflow: hidden; /* Loại bỏ overflow để không có phần thừa của carousel */
+    }
+</style>

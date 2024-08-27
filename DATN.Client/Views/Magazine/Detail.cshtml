@@ -1,0 +1,54 @@
+﻿@model DATN.Core.ViewModel.MagazineVM.MagazineVM
+<style>
+    .pro-detail-container {
+        margin-left: 160px;
+        margin-right: 160px;
+        margin-top: 30px;
+    }
+</style>
+<div class="pro-detail-container">
+    <div class="row">
+        <!-- Cột chi tiết chương trình khuyến mãi hiện tại -->
+        <div class="col-8">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h3 class="card-title">@Model.Caption</h3>
+                    <p class="card-text">@string.Format("Đăng lúc {0:h\\h00}, {1:dd/MM/yyyy}", Model.CreateAt, Model.CreateAt)</p>
+                    <h4 class="card-text">@Html.Raw(Model.Content)</h4>
+                </div>
+            </div>
+        </div>
+        <!-- Cột danh sách các chương trình khuyến mãi khác -->
+        <div class="col-4">
+            <div class="other-promos-container">
+                <p>Các tin khuyến mãi khác</p>
+
+                @foreach (var magazine in ViewBag.OtherMagazines)
+                {
+                    <div class="card mb-3" style="max-width: 540px; max-height: 120px;" onclick="loadMagazineDetail(@magazine.MagazineId)">
+                        <div class="row g-0">
+                            <div class="col-md-4" style="max-width: 200px; max-height: 120px; overflow: hidden;">
+                                <img src="@magazine.Image" class="img-fluid rounded-start" alt="@magazine.Content" style="object-fit: cover; width: 100%; height: 120px;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">@magazine.Caption</h5>
+                                    <p class="card-text"> @magazine.CreateAt?.ToString("dd/MM/yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadMagazineDetail(magazineId) {
+            window.location.href = '@Url.Action("Detail", "Magazine")' + '?magazineId=' + magazineId;
+        }
+    </script>
+}

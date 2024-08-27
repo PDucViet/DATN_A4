@@ -1,0 +1,50 @@
+﻿
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000; /* Đảm bảo nút điều hướng hiển thị trên các hình ảnh */
+}
+
+.carousel-control-prev {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0,0,0,0.7);
+    left: -6px;
+}
+
+.carousel-control-next {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0,0,0,0.7);
+    right: -6px;
+}
+
+.carouselExampleIndicators {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 1200px;
+    padding:20px;
+    background-color:#1152ab
+    /*padding-left: 165px;
+    padding-right: 165px;*/
+}
+.col{
+    margin:0 4px;
+    padding-bottom:40px
+}
+.col:hover{
+    cursor:pointer
+}
+.img-box-child {
+    transition: 0.5s
+}
+.img-box:hover .img-box-child{
+    transform:translateY(-8px);
+}
+.image-box:not(:hover) .img-box-child {
+    transform: translateY(0);
+}

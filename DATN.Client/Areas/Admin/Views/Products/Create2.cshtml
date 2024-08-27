@@ -1,0 +1,759 @@
+﻿@model DATN.Core.ViewModel.ProductVM.CreateProductVM
+
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<!-- Or for RTL support -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Create new product</h4>
+<hr />
+<div class="row m-2">
+    <div class="row">
+            <form asp-action="Create2" enctype="multipart/form-data" id="productForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="VariantsJson" id="hiddenVariantsJson" />
+                <input type="hidden" name="DynamicAttributesJson" id="hiddenDynamicAttributesJson" /
+                <div class="row">
+                    <div class="col-md-10 mb-2">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" id="editor" class="form-control input_content"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="row col-10">
+                            @*    <div class="form-group col-md-3">
+                            <label asp-for="CreateBy" class="control-label"></label>
+                            <input asp-for="CreateBy" class="form-control" />
+                            <span asp-validation-for="CreateBy" class="text-danger"></span>
+                            </div> *@
+                            <div class="form-group col-md-3">
+                                <label asp-for="Status" class="control-label"></label>
+                                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="BrandId" class="control-label"></label>
+                                <select asp-for="BrandId" class="form-control" asp-items="ViewBag.listBrand"></select>
+                                <span asp-validation-for="BrandId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="OriginId" class="control-label"></label>
+                                <select asp-for="OriginId" class="form-control" asp-items="ViewBag.listOrigin"></select>
+                                <span asp-validation-for="OriginId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        @*   <div class="form-group">
+                        <label asp-for="Origin" class="control-label"></label>
+                        <select asp-for="Origin" class="form-control" asp-items="ViewData['listOrigin']"></select>
+                        <span asp-validation-for="Origin" class="text-danger"></span>
+                        </div> *@
+                        <div class="form-group">
+                            <label for="defaultImage" class="control-label">Ảnh chính sản phẩm</label>
+                            <input id="defaultImage" name="defaultImage" type="file" class="form-control" accept="image/*" />
+                        </div>
+                        <div class="form-group">
+                            <label for="files" class="control-label">Các ảnh khác</label>
+                            <input id="files" name="files" type="file" class="form-control" multiple accept="image/*" />
+                        </div>
+                    </div>
+               
+                </div>
+                 <br />
+                <hr />
+                <div class="row">
+                <!-- Select attribute Variants -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="">
+                            <label for="variantId" class="control-label">Chọn biến thể</label>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#attributeVariant">Thêm biến thể mới</button>
+                        </div>
+
+                        <select id="variantId" class="form-control"></select>
+                        @*  <span asp-validation-for="Value.AtributeValueId" class="text-danger"></span> *@
+                    </div>
+                    <div class="overflow-auto" style="height: 300px;">
+                        <div id="attribute-values-container" class="form-group">
+                            <!-- Nơi sẽ hiển thị các giá trị thuộc tính -->
+                        </div>
+                    </div>
+
+                    @* <button id="add-attribute-Variant" class="btn btn-primary">Add</button> *@
+                </div>
+                
+                <!-- Select attribute Dynamic -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            <label for="attributeValueId" class="control-label">Chọn thuộc tính</label>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#attributeDynamicModal">Thêm thuộc tính động</button>
+                        </div>
+                        <select class="form-select" id="multiple-select-attributeValueId" data-placeholder="Hãy chọn ít nhất một biến thế" multiple>
+                        </select>
+                        <!-- <span asp-validation-for="AttributeValueId" class="text-danger"></span> -->
+                    </div>
+                    <!-- Nơi sẽ hiển thị các giá trị thuộc tính -->
+                    <div class="overflow-auto" style="height: 300px;">
+                        <div id="selected-attributes-container">
+                        </div>
+                    </div>
+                    @* <button id="add-attribute-Dynamic" class="btn btn-primary">Add</button> *@
+                </div>
+                </div>
+                <!-- Table to display the selected variants -->
+                <br />
+                  <hr />
+            <div class ="row">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên biến thể</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập</th>
+                                <th>Giá bán</th>
+                                <th>Thuế</th>
+                                <th>Năm sản xuất</th>
+                                <th>Biến thể mặc định</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="variant-list">
+                            <!-- Nơi hiển thị danh sách biến thể -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end mt-3 me-3    ">
+                    @* <button type="button" class="btn btn-primary" id="createProductBtn">Create</button> *@
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+
+    </div>
+
+    <!-- Modal attribute Dynamic -->
+    <div class="modal fade" id="attributeDynamicModal" tabindex="-1" aria-labelledby="attributeDynamicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attributeValueModalLabel">Thêm thuộc tính và giá trị</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="attributeDynamicForm">
+                        <!-- Container for dynamic attribute-value pairs -->
+                        <div id="attributeDynamicContainer" class="mb-3">
+                            <!-- Initial attribute-value pair -->
+                            <div class="attribute-value-pair row mb-3">
+                                <div class="col-5">
+                                    <input type="text" name="attributeName[]" class="form-control" placeholder="Thuộc tính">
+                                    <div class="text-danger error-message"></div>
+                                </div>
+                                <div class="col-5">
+                                    <input type="text" name="attributeValue[]" class="form-control" placeholder="Giá trị">
+                                    <div class="text-danger error-message"></div>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-danger removeAttributeValuePair">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add new attribute-value pair button -->
+                        <div class="form-group mb-3">
+                            <button type="button" id="createValueButton" class="btn btn-secondary">Tạo mới</button>
+                        </div>
+                        <!-- Buttons for create and submit -->
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" id="createAttributeButton" class="btn btn-success">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal attribute variant -->
+    <div class="modal fade" id="attributeVariant" tabindex="-1" aria-labelledby="attributeVariantModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attributeVariantModalLabel">Thêm giá trị thuộc tính</h5>
+                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="attributeValueForm">
+                        <div class="form-group">
+                            <label>Thuộc tính</label>
+                            <input type="text" name="Attribute.Name" class="form-control" placeholder="Tên thuộc tính" />
+                            <span class="text-danger" id="attributeNameError"></span> <!-- Phần tử hiển thị lỗi -->
+                            <input type="hidden" name="Attribute.IsActive" value="true" />
+                        </div>
+                        <div class="overflow-auto" style="height: 400px;">
+                            <div class="col" id="attributeValuesContainer">
+                                <!-- Default value input -->
+                                <div class="form-group" id="value_0">
+                                    <label>Giá trị biến thể</label>
+                                    <input type="text" name="Attribute.Values[0].Value" class="form-control" placeholder="Nhập giá trị thuộc tính" />
+                                    <span class="text-danger" id="attributeValueError_0"></span> <!-- Phần tử hiển thị lỗi -->
+                                    <input type="hidden" name="Attribute.Values[0].IsActive" value="true" />
+                                    <hr />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group float-end">
+                            <button type="button" onclick="addValueVariation()" id="addFieldButton" class="btn btn-secondary">Thêm giá trị</button>
+                            <button type="button" id="createVariantProduct" class="btn btn-primary">Tạo mới</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const container = document.getElementById("selected-attributes-container");
+                const addButton = document.getElementById("add-attribute-Dynamic");
+                const selectElement = document.getElementById("multiple-select-attributeValueId");
+                fetch("https://localhost:7095/api/Attributes/GetAllAttributeDynamic")
+                    .then(response => response.json())
+                    .then(data => {
+
+                        data.forEach(item => {
+                            const option = document.createElement("option");
+                            option.value = item.id; // Hoặc thuộc tính ID của bạn
+                            option.textContent = item.name; // Hoặc tên thuộc tính của bạn
+                            selectElement.appendChild(option);
+                        });
+                        // Khởi tạo Select2 sau khi các option đã được thêm
+                        $('#multiple-select-attributeValueId').select2({
+                            theme: "bootstrap-5",
+                            width: '100%', // hoặc bạn có thể giữ nguyên logic kiểm tra width
+                            placeholder: $('#multiple-select-attributeValueId').data('placeholder'),
+                            closeOnSelect: false,
+                            tags: true
+                        });
+
+                    })
+                    .catch(error => console.error('Error fetching attributes:', error));
+
+                // Event listener for select change
+                $('#multiple-select-attributeValueId').on('change', function () {
+                    const selectedIds = $(this).val();
+                    container.innerHTML = ''; // Clear previous values
+
+                    selectedIds.forEach(selectedId => {
+                        fetch(`https://localhost:7095/api/Attributes/GetById/${selectedId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                data.attributeValues.forEach(value => {
+                                    const valueDiv = document.createElement("div");
+                                    valueDiv.className = "attribute-value-item";
+                                    valueDiv.innerHTML = `
+                                            <label>${data.name}:</label>
+                                             <input type="text" value="${value.value}" class="form-control" />
+                                                         <input type="hidden" class="dynamic-id" value="${value.atributeValueId}" /> <!-- ID ẩn -->
+                                                                                                                       `;
+                                               // <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                    container.appendChild(valueDiv);
+                                });
+
+                                // Add delete functionality to each button
+                                document.querySelectorAll(".delete-attribute-value").forEach(button => {
+                                    button.addEventListener("click", function () {
+                                        this.parentElement.remove();
+                                    });
+                                });
+                            })
+                            .catch(error => console.error('Error fetching attribute values:', error));
+                    });
+                });
+
+                // Event listener for add button
+                addButton.addEventListener("click", function () {
+                    const valueDiv = document.createElement("div");
+                    valueDiv.className = "attribute-value-item";
+                    valueDiv.innerHTML = `
+                                            <input type="text" class="form-control" placeholder="New value" />
+                                          <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                                                                                                                                `;
+                    container.appendChild(valueDiv);
+
+                    // Add delete functionality to the new button
+                    valueDiv.querySelector(".delete-attribute-value").addEventListener("click", function () {
+                        this.parentElement.remove();
+                    });
+                });
+
+                // Function to add new attribute value via API
+                function addAttributeValue(attributeId, value) {
+                    fetch(`https://localhost:7095/api/AttributeValues/Add`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            attributeId: attributeId,
+                            value: value
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Value added:', data);
+                        })
+                        .catch(error => console.error('Error adding attribute value:', error));
+                }
+
+                // Example of how you could trigger the API call for adding new values
+                document.querySelector("#some-submit-button").addEventListener("click", function () {
+                    const selectedId = selectElement.value;
+                    const values = Array.from(container.querySelectorAll("input")).map(input => input.value);
+                    values.forEach(value => addAttributeValue(selectedId, value));
+                });
+            });
+
+
+            // Attribute Variant
+            document.addEventListener("DOMContentLoaded", function () {
+                const selectElement = document.getElementById("variantId");
+                const container = document.getElementById("attribute-values-container");
+                const addButton = document.getElementById("add-attribute-Variant");
+                const priceProductInput = document.getElementById("PriceProduct");
+                const quantityProductInput = document.getElementById("QuantityProduct");
+                const variantList = document.getElementById("variant-list");
+                // const variantList = document.getElementById("variant-isDefault");
+
+                // Thêm tùy chọn trống vào danh sách select
+                const emptyOption = document.createElement("option");
+                emptyOption.value = "";
+                emptyOption.textContent = "Chọn biến thể (tùy chọn trống)";
+                selectElement.appendChild(emptyOption);
+
+                // Fetch danh sách biến thể
+                fetch("https://localhost:7095/api/Variant/GetAllAttributeVariation")
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(item => {
+                            const option = document.createElement("option");
+                            option.value = item.id;
+                            option.textContent = item.name;
+                            selectElement.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching attributes:', error));
+
+                selectElement.addEventListener("change", function () {
+                    const selectedId = selectElement.value;
+
+                    // Kiểm tra nếu không có biến thể được chọn (tức là tùy chọn trống)
+                    if (!selectedId) {
+                        // Hiển thị hoặc kích hoạt lại các trường giá và số lượng sản phẩm gốc
+                        priceProductInput.disabled = false;
+                        quantityProductInput.disabled = false;
+                        container.innerHTML = ''; // Xóa các giá trị thuộc tính hiện tại
+                        variantList.innerHTML = ''; // Xóa bảng biến thể hiện tại
+                        return;
+                    }
+
+
+                    // Fetch giá trị thuộc tính dựa trên biến thể được chọn
+                    fetch(`https://localhost:7095/api/Variant/GetById/${selectedId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            container.innerHTML = ''; // Clear previous values in the container
+                            variantList.innerHTML = ''; // Clear the table rows
+
+                            let stt = 1; // Reset STT
+
+                            data.attributeValues.forEach(value => {
+                                // Tạo và hiển thị các giá trị thuộc tính trong container
+                                const valueDiv = document.createElement("div");
+                                valueDiv.className = "attribute-value-item";
+                                valueDiv.innerHTML = `
+                                                                                                        <input type="text" value="${value.value}" class="form-control" />
+                                                                                                        <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                                                                                    `;
+                                container.appendChild(valueDiv);
+
+                                // Generate a row for the table
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                                                <td>${stt}</td>
+
+                                                                <td>${value.value}</td>
+                                                                <td><input type="number" class="form-control variant-quantity" min="1" value="10" required /></td> <!-- Số lượng mặc định là 10 -->
+                                                                <td><input type="number" class="form-control variant-PuscharPrice" min="0" step="1000000" value="10000000" required /></td> <!-- Giá nhập mặc định là 10 triệu VND -->
+                                                                <td><input type="number" class="form-control variant-salePrice" min="0" step="1000000" value="11000000" required /></td> <!-- Giá bán mặc định là 11 triệu VND -->
+                                                                <td><input type="number" class="form-control variant-tax" min="0" step="1" value="10" required /></td> <!-- Thuế mặc định là 10% -->
+                                                                <td><input type="number" class="form-control variant-relesyear" min="2000" step="1" value="2020" required /></td> 
+                                                                <td><button class="btn btn-danger btn-sm delete-variant-row">Delete</button></td>
+                                                                                           <input type="hidden" class="variant-id" value="${value.atributeValueId}" /> <!-- ID ẩn -->
+                                                            `;
+                                variantList.appendChild(row);
+                                                                // <td><input type="checkbox" class="form-control variant-isDefault" /></td> 
+                                // Increment STT for next row
+                                stt++;
+
+                                // Add delete event for the attribute value
+                                valueDiv.querySelector(".delete-attribute-value").addEventListener("click", function () {
+                                    const index = Array.from(container.children).indexOf(valueDiv);
+                                    row.remove(); // Remove corresponding row from table
+                                    valueDiv.remove(); // Remove from container
+                                });
+
+                                // Add delete event for the row in the table
+                                row.querySelector(".delete-variant-row").addEventListener("click", function () {
+                                    const index = Array.from(variantList.children).indexOf(row);
+                                    row.remove(); // Remove from table
+                                    container.children[index].remove(); // Remove corresponding attribute value from container
+                                });
+                            });
+                        })
+                        .catch(error => console.error('Error fetching attribute values:', error));
+                });
+
+                addButton.addEventListener("click", function () {
+                    const valueDiv = document.createElement("div");
+                    valueDiv.className = "attribute-value-item";
+                    valueDiv.innerHTML = `
+                                                                                            <input type="text" class="form-control" placeholder="New value" />
+                                                                                            <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                                                                        `;
+                    container.appendChild(valueDiv);
+
+                    // Generate a new row in the table
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                                                                                            <td>${variantList.children.length + 1}</td>
+                                                                                            <td>${valueDiv.querySelector("input").value}</td>
+                                                                                            <td><input type="number" class="form-control" min="1" required /></td>
+                                                                                            <td><input type="number" class="form-control" min="0" step="0.01" required /></td>
+                                                                                            <td><input type="number" class="form-control" min="0" step="0.01" required /></td>
+                                                                                            <td><input type="number" class="form-control" min="0" step="0.01" required /></td>
+                                                                                            <td><button class="btn btn-danger btn-sm delete-variant-row">Delete</button></td>
+                                                                                        `;
+                    variantList.appendChild(row); 
+
+                    valueDiv.querySelector(".delete-attribute-value").addEventListener("click", function () {
+                        const index = Array.from(container.children).indexOf(valueDiv);
+                        row.remove(); // Remove corresponding row from table
+                        valueDiv.remove(); // Remove from container
+                    });
+
+                    row.querySelector(".delete-variant-row").addEventListener("click", function () {
+                        const index = Array.from(variantList.children).indexOf(row);
+                        row.remove(); // Remove from table
+                        container.children[index].remove(); // Remove corresponding attribute value from container
+                    });
+                });
+
+                function addAttributeValue(attributeId, value, price, quantity) {
+                    fetch(`https://localhost:7095/api/AttributeValues/Add`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            attributeId: attributeId,
+                            value: value,
+                            price: price,
+                            quantity: quantity
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Value added:', data);
+                        })
+                        .catch(error => console.error('Error adding attribute value:', error));
+                }
+
+                document.querySelector("#some-submit-button").addEventListener("click", function () {
+                    const selectedId = selectElement.value;
+                    const values = Array.from(container.querySelectorAll(".attribute-value-item")).map(item => {
+                        return {
+                            value: item.querySelector("input[type='text']").value,
+                            price: item.querySelector("input[placeholder='Price']").value,
+                            quantity: item.querySelector("input[placeholder='Quantity']").value
+                        };
+                    });
+
+                    values.forEach(({ value, price, quantity }) => addAttributeValue(selectedId, value, price, quantity));
+                });
+            });
+
+
+
+
+        </script>
+        @* Create Attribute Variant and dynamic *@
+        <script>
+            let valueIndex = 1; // Bắt đầu từ 1 vì giá trị đầu tiên đã tồn tại
+
+            function addValueVariation() {
+                let container = document.getElementById('attributeValuesContainer');
+                let newValue = document.createElement('div');
+                newValue.classList.add('form-group');
+                newValue.id = `value_${valueIndex}`;
+                newValue.innerHTML = `
+                                                                                                                                <label>Giá trị biến thể</label>
+                                                                                                                                <input type="text" name="Attribute.Values[${valueIndex}].Value" class="form-control" placeholder="Nhập giá trị thuộc tính" />
+                                                                                                                                <span class="text-danger" id="attributeValueError_${valueIndex}"></span> <!-- Phần tử hiển thị lỗi -->
+                                                                                                                                <input type="hidden" name="Attribute.Values[${valueIndex}].IsActive" value="true" />
+                                                                                                                                <button type="button" class="btn btn-danger" onclick="removeElementVariant(${valueIndex})">Xóa giá trị</button>
+                                                                                                                                <hr />
+                                                                                                                            `;
+                container.appendChild(newValue);
+                valueIndex++;
+            }
+
+            function removeElementVariant(index) {
+                let value = document.getElementById(`value_${index}`);
+                value.remove();
+            }
+
+            document.getElementById('createVariantProduct').addEventListener('click', function () {
+                // Xóa tất cả lỗi cũ
+                document.getElementById('attributeNameError').textContent = '';
+                document.querySelectorAll('[id^="attributeValueError_"]').forEach(e => e.textContent = '');
+
+                let form = document.getElementById('attributeValueForm');
+                let formData = new FormData(form);
+                let attributeName = formData.get('Attribute.Name').trim();
+                let isValid = true;
+
+                // Kiểm tra nếu tên thuộc tính trống
+                if (attributeName === '') {
+                    document.getElementById('attributeNameError').textContent = 'Không được để trống tên thuộc tính';
+                    isValid = false;
+                }
+
+                // Kiểm tra các giá trị biến thể
+                let values = [];
+                let index = 0;
+                while (formData.has(`Attribute.Values[${index}].Value`)) {
+                    let value = formData.get(`Attribute.Values[${index}].Value`).trim();
+                    if (value === '') {
+                        document.getElementById(`attributeValueError_${index}`).textContent = 'Không được để trống giá trị biến thể';
+                        isValid = false;
+                    } else {
+                        values.push({
+                            value: value // Đặt đúng tên thuộc tính cho request body
+                        });
+                    }
+                    index++;
+                }
+
+                // Nếu có lỗi thì dừng lại không tiếp tục xử lý
+                if (!isValid) {
+                    return;
+                }
+
+                // Khởi tạo đối tượng attributeData
+                let attributeData = {
+                    name: attributeName, // Đặt đúng tên thuộc tính cho request body
+                    value: values // Đặt đúng tên thuộc tính cho request body
+                };
+
+                // Gọi API
+                fetch('https://localhost:7095/api/Variant/CreateVariationProduct', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(attributeData)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Tạo biến thể thành công!');
+                            location.reload();
+                        } else if (response.status === 409) {
+                            return response.text().then(text => { throw new Error(text); });
+                        } else {
+                            throw new Error('Có lỗi xảy ra, vui lòng thử lại.');
+                        }
+                    })
+                    .catch(error => {
+                        // Hiển thị lỗi phía dưới ô input
+                        if (error.message.includes('Thuộc tính đã tồn tại')) {
+                            document.getElementById('attributeNameError').textContent = error.message;
+                        } else if (error.message.includes('Giá trị đã tồn tại')) {
+                            // Giả sử bạn có thể xác định vị trí giá trị nào bị lỗi
+                            document.querySelector(`[id^="attributeValueError_"]`).textContent = error.message;
+                        } else {
+                            alert(error.message);
+                        }
+                    });
+            });
+
+            //add Dynamic
+
+            document.getElementById('createValueButton').addEventListener('click', function () {
+                const container = document.getElementById('attributeDynamicContainer');
+                const newAttributeValuePair = document.createElement('div');
+                newAttributeValuePair.className = 'attribute-value-pair row mb-3';
+                newAttributeValuePair.innerHTML = `
+                                                                                                    <div class="col-5">
+                                                                                                        <input type="text" name="attributeName[]" class="form-control" placeholder="Thuộc tính">
+                                                                                                        <div class="text-danger error-message"></div>
+                                                                                                    </div>
+                                                                                                    <div class="col-5">
+                                                                                                        <input type="text" name="attributeValue[]" class="form-control" placeholder="Giá trị">
+                                                                                                        <div class="text-danger error-message"></div>
+                                                                                                    </div>
+                                                                                                    <div class="col-2">
+                                                                                                        <button type="button" class="btn btn-danger removeAttributeValuePair">&times;</button>
+                                                                                                    </div>
+                                                                                                `;
+                container.appendChild(newAttributeValuePair);
+            });
+
+            document.getElementById('attributeDynamicContainer').addEventListener('click', function (event) {
+                if (event.target.classList.contains('removeAttributeValuePair')) {
+                    const pairToRemove = event.target.closest('.attribute-value-pair');
+                    pairToRemove.remove();
+                }
+            });
+
+            document.getElementById('attributeDynamicForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Ngăn chặn form submit mặc định
+
+                const attributeNameInputs = document.querySelectorAll('input[name="attributeName[]"]');
+                const attributeValueInputs = document.querySelectorAll('input[name="attributeValue[]"]');
+                const regex = /\S+/; // Kiểm tra ô input không được để trống
+                let isValid = true;
+
+                // Xóa tất cả các thông báo lỗi hiện có
+                document.querySelectorAll('.error-message').forEach(function (errorElement) {
+                    errorElement.textContent = '';
+                });
+
+                // Kiểm tra tất cả các ô input
+                for (let i = 0; i < attributeNameInputs.length; i++) {
+                    if (!regex.test(attributeNameInputs[i].value.trim())) {
+                        const errorMessageElement = attributeNameInputs[i].nextElementSibling;
+                        errorMessageElement.textContent = 'Không được để trống.';
+                        isValid = false;
+                    }
+                    if (!regex.test(attributeValueInputs[i].value.trim())) {
+                        const errorMessageElement = attributeValueInputs[i].nextElementSibling;
+                        errorMessageElement.textContent = 'Không được để trống.';
+                        isValid = false;
+                    }
+                }
+
+                if (isValid) {
+                    // Chuẩn bị dữ liệu để gửi
+                    const data = [];
+                    for (let i = 0; i < attributeNameInputs.length; i++) {
+                        const attribute = {
+                            Name: attributeNameInputs[i].value.trim(),
+                            Value: attributeValueInputs[i].value.trim()
+                        };
+                        data.push(attribute);
+                    }
+
+                    // Gửi dữ liệu về API
+                    fetch('https://localhost:7095/api/Attributes/CreateDynamicProduct', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(result => {
+                                    console.log('Lỗi từ server:', result); // Kiểm tra cấu trúc lỗi từ server
+                                    // Xử lý lỗi dựa trên cấu trúc phản hồi từ server
+                                });
+                            } else {
+                                alert('Dữ liệu đã được gửi thành công!');
+                                document.getElementById('attributeDynamicForm').reset();
+                                $('#attributeDynamicModal').modal('hide');
+                                window.location.reload()
+                            }
+                        })
+                    const errors = result.errors;
+                    for (const key in errors) {
+                        const inputElements = document.querySelectorAll(`input[name="${key}[]"]`);
+                        inputElements.forEach(inputElement => {
+                            const errorMessageElement = inputElement.nextElementSibling;
+                            errorMessageElement.textContent = errors[key].join(', ');
+                        });
+                    }
+                }
+            });
+        </script>
+        <!-- Create All -->
+        <script>
+            document.getElementById("productForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                // Collecting variant data
+                const variants = [];
+                document.querySelectorAll("#variant-list tr").forEach(row => {
+                    const variant = {
+                        AttributeValueId: row.querySelector(".variant-id").value, // Thay đổi ở đây
+                        Quantity: row.querySelector(".variant-quantity").value,
+                        PuscharPrice: row.querySelector(".variant-PuscharPrice").value,
+                        SalePrice: row.querySelector(".variant-salePrice").value,
+                        Tax: row.querySelector(".variant-tax").value,
+                        ReleaseYear: row.querySelector(".variant-relesyear").value,
+                        // IsDefault: row.querySelector(".variant-isDefault").value,
+                    };
+                    variants.push(variant);
+                });
+
+                // Collecting dynamic attribute data
+                const dynamicAttributes = [];
+                document.querySelectorAll("#selected-attributes-container .attribute-value-item").forEach(item => {
+                    const attribute = {
+                        AttributeValueId: item.querySelector(".dynamic-id").value, // Đảm bảo có lớp .dynamic-id
+                        Value: item.querySelector("input").value,
+                    };
+                    dynamicAttributes.push(attribute);
+                });
+
+                // Storing JSON data in hidden inputs
+                document.getElementById("hiddenVariantsJson").value = JSON.stringify(variants);
+                document.getElementById("hiddenDynamicAttributesJson").value = JSON.stringify(dynamicAttributes);
+
+                // Submit the form
+                this.submit();
+            });
+
+        </script>
+
+        <script>
+            CKSource.Editor
+                .create(document.querySelector('#editor'))
+                .catch(error => {
+                    console.error(error);
+                });
+        </script>
+    }
+    
+ 
+  
+   

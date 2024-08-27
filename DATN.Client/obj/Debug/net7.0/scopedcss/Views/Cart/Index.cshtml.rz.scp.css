@@ -1,0 +1,8 @@
+.hide[b-ms1gtrofxl]{
+    display:none;
+}
+input[type="number"][b-ms1gtrofxl]::-webkit-outer-spin-button,
+input[type="number"][b-ms1gtrofxl]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

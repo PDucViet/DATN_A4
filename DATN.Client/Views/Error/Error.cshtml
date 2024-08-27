@@ -1,0 +1,16 @@
+﻿@using DATN.Client.Helper
+@model Exception
+@{
+    UserInfo userInfo = SessionHelper.GetObject<UserInfo>(Context.Session, "user");
+}
+
+<section class="error-404 min-vh-100 d-flex flex-column align-items-center justify-content-start my-5 ">
+    <img src="/assets/img/errors/403.svg" width="300" height="300" class="img-fluid py-4" alt="Access Denied">
+    <h2>An error occurred</h2>
+    <h2 class="text-center">@Model.Message</h2>
+    <a class="btn btn-primary" asp-area="@(userInfo?.Role == "Admin" ? "Admin" : "")" asp-controller="Home" asp-action="Index">
+
+        <i class="bi bi-arrow-return-left"></i>
+        <span>Trở về trang chủ</span>
+    </a>
+</section>

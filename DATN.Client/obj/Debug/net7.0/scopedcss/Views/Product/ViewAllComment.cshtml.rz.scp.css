@@ -1,0 +1,61 @@
+.vote-star[b-3re2diep9z] {
+    padding-right: 6px;
+}
+.voted[b-3re2diep9z] {
+    color: #ff9f00;
+}
+.un-voted[b-3re2diep9z] {
+    color: #eee;
+}
+.marked[b-3re2diep9z] {
+    color: #0071e3;
+    cursor: pointer;
+  font-size: 12px;
+    margin-top: 22px;
+}
+.boxrate__title[b-3re2diep9z] {
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 32px;
+    text-align: left;
+}
+.filter-star[b-3re2diep9z] {
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    color: #f2994a;
+    cursor: pointer;
+    width: 65px;
+    display: block;
+    margin-right: 10px;
+    padding: 4px 12px;
+    transition: .3s;
+}
+.filter-all[b-3re2diep9z] {
+    border: 1px solid #e5e5e5;
+    color: #333;
+    border-radius: 14px;
+    cursor: pointer;
+    display: block;
+    margin-right: 10px;
+    padding: 4px 12px;
+    transition: .3s;
+    width: 75px;
+}
+.filter-active[b-3re2diep9z] {
+    border: 1px solid #0071e3 !important; 
+}
+.filter-text[b-3re2diep9z] {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 18px;
+}
+.page-link[b-3re2diep9z] {
+    color: black;
+}
+.active-page[b-3re2diep9z] {
+    background: antiquewhite;
+    color: #0d6efd !important;
+}
+.page-item[b-3re2diep9z] {
+    cursor:pointer;
+}

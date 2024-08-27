@@ -1,0 +1,111 @@
+﻿@model DATN.Core.ViewModel.InvoiceVM.InvoiceVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Đơn hàng chi tiết</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Invoice" asp-action="Index">Hóa đơn</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Edit" id="" asp-controller="Invoice" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="InvoiceId" />
+                <div class="form-group">
+                    <label asp-for="InvoiceId" class="control-label">Mã hóa đơn</label>
+                    <input asp-for="InvoiceId" class="form-control" readonly />
+                    <span asp-validation-for="InvoiceId" class="text-danger"></span>
+                </div>
+                <table class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Phân loại sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
+                            <th scope="col">Giá khuyến mãi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.InvoiceDetails)
+                        {
+                            <tr>
+                                <th scope="row">@item.ProductAttribute.Product.Name</th>
+                                <td>@item.ProductAttribute.AttributeValue.Value</td>
+                                <td>@item.OldPrice</td>
+                                <td>@item.NewPrice</td>
+                            </tr>
+                        }
+                        <tr>
+                            <th style="color:red" scope="row">Tổng tiền hàng</th>
+                            <td colspan="2"></td>
+                            <td style="color:red">@Model.InvoiceDetails.Sum(p => p.NewPrice*p.Quantity)</td>
+                        </tr>
+                        <tr>
+                            <th style="color:red" scope="row">Voucher</th>
+                            @if (Model.VoucherUserId != null)
+                            {
+                                <td colspan="2">@Model.VoucherUser.Voucher.Name</td>
+                                var total = @Model.InvoiceDetails.Sum(p => p.NewPrice*p.Quantity);
+                                var discount = total * (Model.VoucherUser.Voucher.DiscountByPercent / (double)100) + (double)Model.VoucherUser.Voucher.DiscountByPrice;
+                                <td style="color:red">-@discount</td>
+                            }
+                            else
+                            {
+                                <td style="color:red" colspan="2"></td>
+                                <td style="color:red">0</td>
+                            }
+                        </tr>
+                        @if (Model.ShippingOrder != null)
+                        {
+                            <tr>
+                                <th style="color:red" scope="row">Phí ship</th>
+                                <td colspan="2"></td>
+                                <td style="color:red">@Model.ShippingOrder.Price</td>
+                            </tr>
+                            <tr>
+                                @if (Model.VoucherUserId != null)
+                                {
+                                    var total = @Model.InvoiceDetails.Sum(p => p.NewPrice*p.Quantity);
+                                    var discount = total * (Model.VoucherUser.Voucher.DiscountByPercent / (double)100) + (double)Model.VoucherUser.Voucher.DiscountByPrice;
+                                    var shippingFee = @Model.ShippingOrder.Price;
+
+                                    <th style="color:red" scope="row">Thực thu</th>
+                                    <td colspan="2"></td>
+                                    <td style="color:red">@(total - discount + shippingFee)</td>
+                                }
+                                else
+                                {
+                                    var total = @Model.InvoiceDetails.Sum(p => p.NewPrice*p.Quantity);
+                                    var shippingFee = @Model.ShippingOrder.Price;
+
+                                    <th style="color:red" scope="row">Thực thu</th>
+                                    <td colspan="2"></td>
+                                    <td style="color:red">@(total + shippingFee)</td>
+
+                                }
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="form-group">
+                    <a asp-action="Index" asp-controller="Invoice" class="btn btn-secondary my-4">Trở lại</a>
+                    @if (Model.Status == DATN.Core.Enum.InvoiceStatus.Pending)
+                    {
+                        <a asp-route-invoiceId="@Model.InvoiceId" asp-action="CreateShippingOrder" asp-controller="Invoice" class="btn btn-primary my-4">Tạo đơn ship</a>
+                        <a asp-route-invoiceId="@Model.InvoiceId" asp-action="CancelInvoice" asp-controller="Invoice" class="btn btn-danger my-4">Hủy hóa đơn</a>
+                    }
+                    else if (Model.Status == DATN.Core.Enum.InvoiceStatus.PaymentSuccess)
+                    {
+                        <a asp-route-invoiceId="@Model.InvoiceId" asp-action="CreateShippingOrder" asp-controller="Invoice" class="btn btn-primary my-4">Tạo đơn ship</a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

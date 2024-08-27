@@ -1,0 +1,182 @@
+﻿@using DATN.Core.ViewModel.ListProductCompVM
+@using DATN.Core.ViewModel.ProductVM
+@using System.Globalization
+@model DATN.Core.ViewModel.ListProductCompVM.ListProductCompVM
+@{
+
+    int itemsPerGroup = 6;
+
+
+}
+<div style="margin:3rem 0">
+    <div class="d-flex justify-content-center w-100">
+        <img src="@Model.BannerUrl" />
+    </div>
+    <div class="carousel_1 d-flex justify-content-center align-items-center">
+
+        <div style="margin:0!important;border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;padding-bottom:28px" id="p-@ViewBag.PromotionId" class="carousel slide carouselExampleIndicators" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @{
+                    var group = new List<ProductVM>();
+                    int count = 0;
+                    if (Model.Products.Count < itemsPerGroup)
+                    {
+                        <div class="carousel-item active">
+
+                            <div class="row" style="border-radius:4px; margin-right:0;margin-left:0">
+                                @foreach (var a in Model.Products)
+                                {
+                                    <div class="col  img-box" style="background-color:#fff;border-radius:4px">
+                                        <div style=" height:220px;background-color:#fff;border-radius:4px" class="d-flex align-items-center justify-conten  img-boxt-between w-100 img-box-child">
+                                            <img style="border-radius:8px;" src="@a.Images.FirstOrDefault(p=>p.IsDefault==true).ImagePath" class="d-block w-100" alt="...">
+
+                                        </div>
+                                        <p style="font-size:14px;line-height:21px;height:63px">@a.Name</p>
+                                        <div class="d-flex align-items-center" style="align-items:baseline!important">
+                                            @{
+                                                // Định dạng số theo chuẩn Việt Nam
+                                                CultureInfo vietnamCulture = new CultureInfo("vi-VN");
+                                                string formattedPrice = String.Format(vietnamCulture, "{0:N0}", a.DefaultPrice);
+                                                string formattedSalePrice = String.Format(vietnamCulture, "{0:N0}", a.ProductAttributes.FirstOrDefault(p=>p.IsDefault==true).SalePrice);
+                                            }
+                                            <div>
+                                                <strong style="font-size:18px;color:#D0021C">@(formattedPrice)đ</strong>
+                                                <p style="font-size:14px;color:#666;text-decoration:line-through">@(formattedSalePrice)đ</p>
+                                            </div>
+                                            <strong style="font-size:14px;color:#EB5757;background-color:#FFF0E9;margin-left:8px">-@(a.Discount)%</strong>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <p style="color:#FB6E2E;font-size:14px;margin:0;padding-right:8px">@a.Rating</p>
+                                            <i style="color:#FB6E2E;font-size:14px;padding-right:8px" class="fa-solid fa-star"></i>
+                                            <p style="margin:0;font-size:14px;color:#999999">(@(a.RateCount))</p>
+                                        </div>
+                                        <div product-id="@a.Id" class="product-detail">Xem chi tiết</div>
+                                    </div>
+                                }
+                                @for (int i = 0; i < 6 - Model.Products.Count; i++)
+                                {
+                                    <div class="col"></div>
+                                }
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+
+                        foreach (var product in Model.Products)
+                        {
+                            group.Add(product);
+                            count++;
+
+                            if (count == itemsPerGroup)
+                            {
+                                <div class="carousel-item active">
+
+                                    <div class="row" style="border-radius:4px; margin-right:0;margin-left:0">
+                                        @foreach (var a in group)
+                                        {
+                                            <div class="col  img-box" style="background-color:#fff;border-radius:4px">
+                                                <div style=" height:220px;background-color:#fff;border-radius:4px" class="d-flex align-items-center justify-conten  img-boxt-between w-100 img-box-child">
+                                                    <img style="border-radius:8px;" src="@a.Images.FirstOrDefault(p=>p.IsDefault==true).ImagePath" class="d-block w-100" alt="...">
+
+                                                </div>
+                                                <p style="font-size:14px;line-height:21px;height:63px">@a.Name</p>
+                                                <div class="d-flex align-items-center" style="align-items:baseline!important">
+                                                    @{
+                                                        // Định dạng số theo chuẩn Việt Nam
+                                                        CultureInfo vietnamCulture = new CultureInfo("vi-VN");
+                                                        string formattedPrice = String.Format(vietnamCulture, "{0:N0}", a.DefaultPrice);
+                                                        string formattedSalePrice = String.Format(vietnamCulture, "{0:N0}", a.ProductAttributes.FirstOrDefault(p => p.IsDefault == true).SalePrice);
+                                                    }
+                                                    <div>
+                                                        <strong style="font-size:18px;color:#D0021C">@(formattedPrice)đ</strong>
+                                                        <p style="font-size:14px;color:#666;text-decoration:line-through">@(formattedSalePrice)đ</p>
+                                                    </div>
+                                                    <strong style="font-size:14px;color:#EB5757;background-color:#FFF0E9;margin-left:8px">-@(a.Discount)%</strong>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <p style="color:#FB6E2E;font-size:14px;margin:0;padding-right:8px">@a.Rating</p>
+                                                    <i style="color:#FB6E2E;font-size:14px;padding-right:8px" class="fa-solid fa-star"></i>
+                                                    <p style="margin:0;font-size:14px;color:#999999">(@a.RateCount)</p>
+                                                </div>
+                                                <div product-id="@a.Id" class="product-detail">Xem chi tiết</div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                group.Clear();
+                                count = 0;
+                            }
+                        }
+
+                        // Kiểm tra nếu còn sản phẩm trong group chưa được in ra
+                        if (group.Count > 0)
+                        {
+                            <div class="carousel-item">
+
+                                <div class="row" style="border-radius:4px; margin-right:0;margin-left:0">
+                                    @foreach (var a in group)
+                                    {
+                                        <div class="col  img-box" style="background-color:#fff;border-radius:4px">
+                                            <div style=" height:220px;background-color:#fff;border-radius:4px" class="d-flex align-items-center justify-conten  img-boxt-between w-100 img-box-child">
+                                                <img style="border-radius:8px;" src="@a.Images.FirstOrDefault(p=>p.IsDefault==true).ImagePath" class="d-block w-100" alt="...">
+
+                                            </div>
+                                            <p style="font-size:14px;line-height:21px;height:63px">@a.Name</p>
+                                            <div class="d-flex align-items-center" style="align-items:baseline!important">
+                                                @{
+                                                    // Định dạng số theo chuẩn Việt Nam
+                                                    CultureInfo vietnamCulture = new CultureInfo("vi-VN");
+                                                    string formattedPrice = String.Format(vietnamCulture, "{0:N0}", a.DefaultPrice);
+                                                    string formattedSalePrice = String.Format(vietnamCulture, "{0:N0}", a.ProductAttributes.FirstOrDefault(p => p.IsDefault == true).SalePrice);
+                                                }
+                                                <div>
+                                                    <strong style="font-size:18px;color:#D0021C">@(formattedPrice)đ</strong>
+                                                    <p style="font-size:14px;color:#666;text-decoration:line-through">@(formattedSalePrice)đ</p>
+                                                </div>
+                                                <strong style="font-size:14px;color:#EB5757;background-color:#FFF0E9;margin-left:8px">-@(a.Discount)%</strong>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <p style="color:#FB6E2E;font-size:14px;margin:0;padding-right:8px">@a.Rating</p>
+                                                <i style="color:#FB6E2E;font-size:14px;padding-right:8px" class="fa-solid fa-star"></i>
+                                                <p style="margin:0;font-size:14px;color:#999999">(@(a.RateCount))</p>
+                                            </div>
+                                            <div product-id="@a.Id" class="product-detail">Xem chi tiết</div>
+                                        </div>
+                                    }
+                                    @for (int i = 0; i < 6 - group.Count; i++)
+                                    {
+                                        <div class="col"></div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#p-@ViewBag.PromotionId" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#p-@ViewBag.PromotionId" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    var products = document.getElementsByClassName("product-detail")
+    for (product of products) {
+        product.addEventListener("click", (e) => {
+            console.log(e.target)
+            var id = e.target.getAttribute("product-id")
+            location.href = `/product/edit?id=${id}`
+        })
+    }
+</script>
+

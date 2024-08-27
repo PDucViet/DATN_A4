@@ -1,0 +1,38 @@
+﻿@using DATN.Core.ViewModel.CategoryVM
+@model LanguageVM
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Thêm mới </h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Language" asp-action="Index">Quay lại</a></li>
+        <li class="breadcrumb-item active">Thêm mới</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form id="category-form" asp-action="Create" asp-controller="Language" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Tên Ngôn Ngữ</label>
+                    <input asp-for="Name" class="form-control"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Tạo mới" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="Language" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const targetBtn = document.getElementById('target-btn');
+
+    function disableButton() {
+        targetBtn.disabled = true;
+        $("#category-form").submit();
+    }
+</script>
+

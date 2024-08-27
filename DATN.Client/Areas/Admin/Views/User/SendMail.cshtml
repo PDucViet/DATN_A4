@@ -1,0 +1,59 @@
+﻿@model DATN.Core.ViewModels.SendMailVM.SendMailVM
+
+@{
+    ViewData["Title"] = "Send Mail";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Gửi thư giới thiệu</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="User" asp-action="Index">Quản lý người dùng</a></li>
+        <li class="breadcrumb-item active">gửi thư giới thiệu</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="SendMail" id="mail-form" asp-controller="User" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Danh sách Mail (mỗi mail viết trên 1 dòng)</label>
+                    <textarea rows="12" required name="listEmail" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label">Nội dung</label>
+                    <textarea asp-for="Content" id="editor" class="form-control"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Subject" class="control-label">Subject</label>
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" id="target-btn" value="Gửi mail" class="btn btn-success m-4" />
+                    <a asp-action="Index" asp-controller="User" class="btn btn-secondary m-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        CKSource.Editor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+
+        const targetBtn = document.getElementById('target-btn');
+
+        function disableButton() {
+            targetBtn.disabled = true;
+            $("#mail-form").submit();
+        }
+
+    </script>
+}
+

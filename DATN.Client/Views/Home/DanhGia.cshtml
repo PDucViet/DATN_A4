@@ -1,0 +1,117 @@
+﻿@{
+	ViewData["Title"] = "DanhGia";
+}
+<h1>@ViewData["Title"]</h1>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bootstrap Modal Example</title>
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		/* Tùy chỉnh kích thước modal */
+		.modal-lg-custom {
+			max-width: 680px;
+		}
+
+		.modal-content-custom {
+			height: 320px;
+		}
+
+		.modal-title {
+			text-align: center;
+			padding-left: 20px;
+		}
+
+		.product .image {
+			text-align: center;
+		}
+
+			.product .image h3 {
+				margin-top: 15px;
+			}
+
+		.rating {
+			display: flex; /* Sử dụng flexbox để căn giữa các phần tử */
+			justify-content: center; /* Căn giữa các phần tử theo chiều ngang */
+			align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+			margin-top: 10px; /* Khoảng cách giữa các dòng */
+		}
+
+			.rating i {
+				display: flex; /* Sử dụng flexbox để căn giữa icon và nhãn */
+				align-items: center; /* Căn giữa icon và nhãn theo chiều dọc */
+
+				color: #f5c518; /* Màu vàng cho ngôi sao */
+				font-size: 24px; /* Kích thước của icon */
+				justify-content: center;
+			}
+
+			.rating p {
+				margin: 0px; /* Xóa khoảng cách mặc định của các phần tử */
+			}
+
+			.rating .item {
+				margin: 0px 10px;
+				justify-content: center;
+			}
+			.modal-title{
+				text-align:center;
+				margin-left:auto;
+			}
+	</style>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+	<!-- Button to trigger modal -->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+		Đánh giá
+	</button>
+
+	<!-- Modal -->
+	<div class="modal fade justify-content-center align-items-center" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg-custom">
+			<div class="modal-content modal-content-custom">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Đánh giá sản phẩm</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body ">
+					<div class="product">
+						<div class="image">
+							<img style="width:100px ; height:29px ; " src="~/Images/Comment/dieu.hoa.jpg" />
+							<h3> Máy lạnh Toshiba Inverter	</h3>
+						</div>
+						<div class="rating">
+							<div class="item">
+								<i class="bi bi-star-fill"></i>
+								<p>Rất Tệ</p>
+							</div>
+							<div class="item">
+								<i class="bi bi-star-fill"></i>
+								<p> Tệ</p>
+							</div>
+							<div class="item">
+								<i class="bi bi-star-fill"></i>
+								<p> Tạm ổn</p>
+							</div>
+							<div class="item">
+								<i class="bi bi-star-fill"></i>
+								<p> Tốt</p>
+							</div>
+							<div class="item">
+								<i class="bi bi-star-fill"></i>
+								<p> Rất tốt</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+
+

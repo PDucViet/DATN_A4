@@ -1,0 +1,29 @@
+﻿@using DATN.Core.ViewModel.CategoryVM
+@using Newtonsoft.Json
+@inject HttpClient httpClient
+@{
+    @model List<DATN.Core.ViewModel.CategoryVM.CategoryVM>;
+    var data = await httpClient.GetAsync("https://localhost:7095/api/Category/GetAll");
+    data.EnsureSuccessStatusCode();
+    var responseContent = await data.Content.ReadAsStringAsync();
+    var cates = JsonConvert.DeserializeObject<List<CategoryVM>>(responseContent);
+}
+<ul class="d-flex justify-content-between align-items-center" style="flex:1;margin:0">
+	@if (cates != null)
+	{
+		@foreach (var category in cates)
+		{
+			@if (category.IsVisible)
+			{
+				<li class="nav-list-item">
+					<a href="@Url.Action("Index", "Categories", new { cateId = category.Id })"
+					   style="text-decoration: none; color: inherit;" cateId="@category.Id" class="cate-item">
+						@category.Name
+					</a>
+				</li>
+			}
+		}
+
+	}
+
+</ul>

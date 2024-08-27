@@ -1,0 +1,532 @@
+﻿@model DATN.Core.ViewModel.ProductVM.ProductVM
+
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<!-- Or for RTL support -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Create new product</h4>
+<hr />
+<div class="row m-2">
+    <div class="col">
+        <form asp-action="Create" enctype="multipart/form-data" id="productForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Quantity" class="control-label"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                    @* <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input type="number" asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <label asp-for="CreateBy" class="control-label"></label>
+                        <input asp-for="CreateBy" class="form-control" />
+                        <span asp-validation-for="CreateBy" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BrandId" class="control-label"></label>
+                        <select asp-for="BrandId" class="form-control" asp-items="ViewBag.listBrand"></select>
+                        <span asp-validation-for="BrandId" class="text-danger"></span>
+                    </div>
+                    @*   <div class="form-group">
+                    <label asp-for="Origin" class="control-label"></label>
+                    <select asp-for="Origin" class="form-control" asp-items="ViewData['listOrigin']"></select>
+                    <span asp-validation-for="Origin" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <label for="defaultImage" class="control-label">Ảnh chính sản phẩm</label>
+                        <input id="defaultImage" name="defaultImage" type="file" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="form-group">
+                        <label for="files" class="control-label">Các ảnh khác</label>
+                        <input id="files" name="files" type="file" class="form-control" multiple accept="image/*" />
+                    </div>
+                    <input type="submit" value="Create" class="btn btn-primary" onclick="submitForm(event)" />
+                </div>
+                <div class="col-4">
+                    <!-- Select attribute Variants -->
+                    <div class="form-group">
+                        <div class="">
+                            <label for="variantId" class="control-label">Chọn biến thể</label>
+                            <button type="button" class="btn btn-outline-primary" onclick="addAttributeVariation()">Thêm biến thể mới</button>
+                        </div>
+
+                        <select id="variantId" class="form-control"></select>
+                        @*  <span asp-validation-for="Value.AtributeValueId" class="text-danger"></span> *@
+                    </div>
+                    <div class="overflow-auto" style="height: 600px;">
+                    <div id="attribute-values-container" class="form-group">
+                        <!-- Nơi sẽ hiển thị các giá trị thuộc tính -->
+                    </div>
+                    </div>
+
+                    <button id="add-attribute-value" class="btn btn-primary">Add</button>
+
+                    <!-- Dynamic attributes will be added here -->
+                    <div class="overflow-auto" style="height: 600px;">
+                        <div class="col" id="attributeVariationContainer">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-4">
+                    <!-- Select attribute Dynamic -->
+                    <div class="form-group">
+                        <div>
+                            <label for="attributeValueId" class="control-label">Chọn thuộc tính</label>
+                            <button type="button" class="btn btn-outline-primary" onclick="addAttribute()">Thêm thuộc tính động</button>
+                        </div>
+                        <select class="form-select" id="multiple-select-attributeValueId" data-placeholder="Hãy chọn ít nhất một biến thế" multiple>
+                        </select>
+                        <!-- <span asp-validation-for="AttributeValueId" class="text-danger"></span> -->
+                    </div>
+                    <!-- Nơi sẽ hiển thị các giá trị thuộc tính -->
+                    <div id="selected-attributes-container"></div>
+                    <button id="add-attribute-value" class="btn btn-primary">Add</button>
+                    <!-- Dynamic attributes will be added here -->
+                    <div class="overflow-auto" style="height: 600px;">
+                        <div class="col" id="attributeDynamicContainer">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const container = document.getElementById("selected-attributes-container");
+            const addButton = document.getElementById("add-attribute-value");
+            const selectElement = document.getElementById("multiple-select-attributeValueId");
+            fetch("https://localhost:7095/api/Attributes/GetAllAttributeDynamic")
+                .then(response => response.json())
+                .then(data => {
+
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item.id; // Hoặc thuộc tính ID của bạn
+                        option.textContent = item.name; // Hoặc tên thuộc tính của bạn
+                        selectElement.appendChild(option);
+                    });
+                    // Khởi tạo Select2 sau khi các option đã được thêm
+                    $('#multiple-select-attributeValueId').select2({
+                        theme: "bootstrap-5",
+                        width: '100%', // hoặc bạn có thể giữ nguyên logic kiểm tra width
+                        placeholder: $('#multiple-select-attributeValueId').data('placeholder'),
+                        closeOnSelect: false,
+                        tags: true
+                    });
+
+                })
+                .catch(error => console.error('Error fetching attributes:', error));
+
+            // Event listener for select change
+            $('#multiple-select-attributeValueId').on('change', function () {
+                const selectedIds = $(this).val();
+                container.innerHTML = ''; // Clear previous values
+
+                selectedIds.forEach(selectedId => {
+                    fetch(`https://localhost:7095/api/Attributes/GetById/${selectedId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.attributeValues.forEach(value => {
+                                const valueDiv = document.createElement("div");
+                                valueDiv.className = "attribute-value-item";
+                                valueDiv.innerHTML = `
+                                            <label>${data.name}:</label>
+                                            <input type="text" value="${value.value}" class="form-control" />
+                                            <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                        `;
+                                container.appendChild(valueDiv);
+                            });
+
+                            // Add delete functionality to each button
+                            document.querySelectorAll(".delete-attribute-value").forEach(button => {
+                                button.addEventListener("click", function () {
+                                    this.parentElement.remove();
+                                });
+                            });
+                        })
+                        .catch(error => console.error('Error fetching attribute values:', error));
+                });
+            });
+
+            // Event listener for add button
+            addButton.addEventListener("click", function () {
+                const valueDiv = document.createElement("div");
+                valueDiv.className = "attribute-value-item";
+                valueDiv.innerHTML = `
+                            <input type="text" class="form-control" placeholder="New value" />
+                            <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                        `;
+                container.appendChild(valueDiv);
+
+                // Add delete functionality to the new button
+                valueDiv.querySelector(".delete-attribute-value").addEventListener("click", function () {
+                    this.parentElement.remove();
+                });
+            });
+
+            // Function to add new attribute value via API
+            function addAttributeValue(attributeId, value) {
+                fetch(`https://localhost:7095/api/AttributeValues/Add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        attributeId: attributeId,
+                        value: value
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Value added:', data);
+                    })
+                    .catch(error => console.error('Error adding attribute value:', error));
+            }
+
+            // Example of how you could trigger the API call for adding new values
+            document.querySelector("#some-submit-button").addEventListener("click", function () {
+                const selectedId = selectElement.value;
+                const values = Array.from(container.querySelectorAll("input")).map(input => input.value);
+                values.forEach(value => addAttributeValue(selectedId, value));
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const selectElement = document.getElementById("variantId");
+            const container = document.getElementById("attribute-values-container");
+            const addButton = document.getElementById("add-attribute-value");
+
+            fetch("https://localhost:7095/api/Variant/GetAllAttributeVariation")
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item.id;
+                        option.textContent = item.name;
+                        selectElement.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching attributes:', error));
+
+            selectElement.addEventListener("change", function () {
+                const selectedId = selectElement.value;
+
+                fetch(`https://localhost:7095/api/Variant/GetById/${selectedId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        container.innerHTML = ''; // Clear previous values
+                        data.attributeValues.forEach(value => {
+                            const valueDiv = document.createElement("div");
+                            valueDiv.className = "attribute-value-item";
+                            valueDiv.innerHTML = `
+                                        <input type="text" value="${value.value}" class="form-control" />
+                                        <input type="text" value="${value.price}" class="form-control" placeholder="Price" />
+                                        <input type="number" value="${value.quantity}" class="form-control" placeholder="Quantity" />
+                                        <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                                    `;
+                            container.appendChild(valueDiv);
+                        });
+
+                        document.querySelectorAll(".delete-attribute-value").forEach(button => {
+                            button.addEventListener("click", function () {
+                                this.parentElement.remove();
+                            });
+                        });
+                    })
+                    .catch(error => console.error('Error fetching attribute values:', error));
+            });
+
+            addButton.addEventListener("click", function () {
+                const valueDiv = document.createElement("div");
+                valueDiv.className = "attribute-value-item";
+                valueDiv.innerHTML = `
+                            <input type="text" class="form-control" placeholder="New value" />
+                            <input type="text" class="form-control" placeholder="Price" />
+                            <input type="number" class="form-control" placeholder="Quantity" />
+                            <button class="btn btn-danger btn-sm delete-attribute-value">Delete</button>
+                        `;
+                container.appendChild(valueDiv);
+
+                valueDiv.querySelector(".delete-attribute-value").addEventListener("click", function () {
+                    this.parentElement.remove();
+                });
+            });
+
+            function addAttributeValue(attributeId, value, price, quantity) {
+                fetch(`https://localhost:7095/api/AttributeValues/Add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        attributeId: attributeId,
+                        value: value,
+                        price: price,
+                        quantity: quantity
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Value added:', data);
+                    })
+                    .catch(error => console.error('Error adding attribute value:', error));
+            }
+
+            document.querySelector("#some-submit-button").addEventListener("click", function () {
+                const selectedId = selectElement.value;
+                const values = Array.from(container.querySelectorAll(".attribute-value-item")).map(item => {
+                    return {
+                        value: item.querySelector("input[type='text']").value,
+                        price: item.querySelector("input[placeholder='Price']").value,
+                        quantity: item.querySelector("input[placeholder='Quantity']").value
+                    };
+                });
+
+                values.forEach(({ value, price, quantity }) => addAttributeValue(selectedId, value, price, quantity));
+            });
+        });
+
+
+    </script>
+    <script>
+        //add attribute Variation
+        let attributeIndex = 0;
+
+        function addAttributeVariation() {
+            let container = document.getElementById('attributeVariationContainer');
+            let newAttribute = document.createElement('div');
+            newAttribute.classList.add('attribute');
+            newAttribute.id = `attribute_${attributeIndex}`;
+            newAttribute.innerHTML = `
+                                                        <div class="form-group">
+                                                                    <label>Thuộc tính</label>
+                                                            <input type="text" name="Attributes[${attributeIndex}].Name" class="form-control" placeholder="Attribute Name" />
+                                                            <input type="hidden" name="Attributes[${attributeIndex}].IsActive" value="true" />
+                                                                    <button type="button" class="btn btn-danger" onclick="removeAttributeVariation(${attributeIndex})">Remove Attribute</button>
+                                                        </div>
+                                                        <div class="attributeValues">
+                                                            <div class="form-group">
+                                                                <label>Biến thể</label>
+                                                                <input type="text" name="Attributes[${attributeIndex}].Values[0].Value" class="form-control" placeholder="Nhập giá trị thuộc tính" />
+                                                                <label>Số lượng</label>
+                                                                <input type="number" name="Attributes[${attributeIndex}].Values[0].Quantity" class="form-control" placeholder="Quantity" min="1" />
+                                                                <input type="hidden" name="Attributes[${attributeIndex}].Values[0].IsActive" value="true" />
+                                                                <button type="button" class="btn btn-danger" onclick="removeElement(this)">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                                                <button type="button" class="btn btn-secondary" onclick="addValueVariation(this, ${attributeIndex})">Thêm biến thể</button>
+                                                        <hr />
+                                                    `;
+            container.appendChild(newAttribute);
+            attributeIndex++;
+        }
+
+        function addValueVariation(button, attributeIndex) {
+            let valuesContainer = button.previousElementSibling;
+            let index = valuesContainer.querySelectorAll('.form-group').length;
+            let newValue = document.createElement('div');
+            newValue.classList.add('form-group');
+            newValue.innerHTML = `
+                                                        <label>Biến thể</label>
+                                                        <input type="text" name="Attributes[${attributeIndex}].Values[${index}].Value" class="form-control" placeholder="Attribute Value" />
+                                                        <label>Số lượng</label>
+                                                        <input type="number" name="Attributes[${attributeIndex}].Values[${index}].Quantity" class="form-control" placeholder="Quantity" min="1" />
+                                                        <input type="hidden" name="Attributes[${attributeIndex}].Values[${index}].IsActive" value="true" />
+                                                                <button type="button" class="btn btn-danger" onclick="removeElementVariation(this)">Delete</button>
+                                                    `;
+            valuesContainer.appendChild(newValue);
+        }
+
+        function removeElementVariation(button) {
+            button.parentElement.remove();
+        }
+
+        function removeAttributeVariation(attributeIndex) {
+            let attribute = document.getElementById(`attribute_${attributeIndex}`);
+            if (attribute) {
+                attribute.remove();
+            } else {
+                console.error(`Attribute with id attribute_${attributeIndex} not found.`);
+            }
+        }
+
+        function submitForm(event) {
+            let isValid = true;
+            let attributes = document.querySelectorAll('.attribute');
+
+            attributes.forEach(attribute => {
+                let attributeName = attribute.querySelector('input[name^="Attributes"][name$=".Name"]').value;
+                if (!attributeName) {
+                    isValid = false;
+                    alert("Attribute name cannot be empty");
+                }
+
+                let values = attribute.querySelectorAll('.attributeValues .form-group');
+                values.forEach(value => {
+                    let attributeValue = value.querySelector('input[name*=".Value"]').value;
+                    let quantity = value.querySelector('input[name*=".Quantity"]').value;
+
+                    if (!attributeValue) {
+                        isValid = false;
+                        alert("Attribute value cannot be empty");
+                    }
+
+                    if (!quantity || parseInt(quantity) < 1) {
+                        isValid = false;
+                        alert("Quantity must be at least 1");
+                    }
+                });
+            });
+
+            if (isValid) {
+                document.getElementById('productForm').submit();
+            } else {
+                event.preventDefault();
+            }
+        }
+
+        //add Dynamic Variation
+        let attributeDynamic = 0;
+
+        function addAttribute() {
+            let container = document.getElementById('attributeDynamicContainer');
+            let newAttribute = document.createElement('div');
+            newAttribute.classList.add('attribute');
+            newAttribute.id = `attribute_${attributeDynamic}`;
+            newAttribute.innerHTML = `
+
+                                                                <div class="form-group">
+                                                                    <label>Thuộc tính động</label>
+                                                                    <input type="text" name="Attributes[${attributeIndex}].Name" class="form-control" placeholder="Tên thuộc tính" />
+                                                                    <input type="hidden" name="Attributes[${attributeIndex}].IsActive" value="true" />
+                                                                    <button type="button" class="btn btn-danger" onclick="removeAttribute(${attributeIndex})">Delete</button>
+                                                                </div>
+                                                                <div class="attributeValues">
+                                                                    <div class="form-group">
+                                                                        <label>Giá trị</label>
+                                                                        <input type="text" name="Attributes[${attributeIndex}].Values[0].Value" class="form-control" placeholder="Giá trị" />
+                                                                        <input type="hidden" name="Attributes[${attributeIndex}].Values[0].IsActive" value="true" />
+                                                                        <button type="button" class="btn btn-danger" onclick="removeElement(this)">Delete</button>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" class="btn btn-secondary" onclick="addValue(this, ${attributeIndex})">Thêm giá trị</button>
+                                                                <hr />
+
+                                                            `;
+            container.appendChild(newAttribute);
+            attributeIndex++;
+        }
+
+        function addValue(button, attributeDynamic) {
+            let valuesContainer = button.previousElementSibling;
+            let index = valuesContainer.querySelectorAll('.form-group').length;
+            let newValue = document.createElement('div');
+            newValue.classList.add('form-group');
+            newValue.innerHTML = `
+                                                                <label>Giá trị</label>
+                                                                        <input type="text" name="Attributes[${attributeIndex}].Values[${index}].Value" class="form-control" placeholder="Giá trị" />
+                                                                <input type="hidden" name="Attributes[${attributeIndex}].Values[${index}].IsActive" value="true" />
+                                                                <button type="button" class="btn btn-danger" onclick="removeElement(this)">Delete</button>
+                                                            `;
+            valuesContainer.appendChild(newValue);
+        }
+
+        function removeElement(button) {
+            button.parentElement.remove();
+        }
+
+        function removeAttribute(attributeIndex) {
+            let attribute = document.getElementById(`attribute_${attributeIndex}`);
+            if (attribute) {
+                attribute.remove();
+            } else {
+                console.error(`Attribute with id attribute_${attributeIndex} not found.`);
+            }
+        }
+
+        function submitForm(event) {
+            let isValid = true;
+            let attributes = document.querySelectorAll('.attribute');
+
+            attributes.forEach(attribute => {
+                let attributeName = attribute.querySelector('input[name^="Attributes"][name$=".Name"]').value;
+                if (!attributeName) {
+                    isValid = false;
+                    alert("Attribute name cannot be empty");
+                }
+
+                let values = attribute.querySelectorAll('.attributeValues .form-group');
+                values.forEach(value => {
+                    let attributeValue = value.querySelector('input[name*=".Value"]').value;
+                    let quantity = value.querySelector('input[name*=".Quantity"]').value;
+
+                    if (!attributeValue) {
+                        isValid = false;
+                        alert("Attribute value cannot be empty");
+                    }
+
+                    if (!quantity || parseInt(quantity) < 1) {
+                        isValid = false;
+                        alert("Quantity must be at least 1");
+                    }
+                });
+            });
+
+            if (isValid) {
+                document.getElementById('productForm').submit();
+            } else {
+                event.preventDefault();
+            }
+        }
+    </script>
+}

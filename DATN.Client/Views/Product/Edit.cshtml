@@ -1,0 +1,557 @@
+﻿@model DATN.Core.ViewModel.ProductVM.ProductEditViewModel
+
+@{
+    // ViewData["Title"] = "Details";
+    var fullStars = (int)Math.Floor(@Model.CommentOverviewVm.AVGRatingStar);
+    var halfStars = (int)Math.Round(@Model.CommentOverviewVm.AVGRatingStar);
+    var nextMonth = DateTime.Now.AddMonths(1).ToString("MMM", new System.Globalization.CultureInfo("vi-VN"));
+    // decimal? discountPercentage = Model.Product.Price != 0 ? ((Model.Product.Price - Model.Product.NewPrice) / Model.Product.Price * 100) : 0;
+    // decimal roundedDiscountPercentage = Math.Round((decimal)discountPercentage, 2);
+    var a = Model;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Initialize Swiper -->
+
+<container>
+    <div class="container-fluid !direction !spacing">
+        <!-- Name product -->
+        <div class="row">
+            <div style="" class="col">
+                <h4 style="font-weight:bold;font-size:18px; margin-top:40px">@Model.Product.Name</h4>
+            </div>
+            <hr>
+        </div>
+        <!-- Layout -->
+        <div class="row">
+            <!-- left product -->
+            <div class="col-7">
+                <div id="carouselExampleControls2" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach (var item in Model.Product.Images.Where(p => p.IsDefault == false).Select((value, index) => new { value, index }))
+                        {
+                            if (item.index == 0)
+                            {
+                                <div class="carousel-item active">
+                                    <img src="@item.value.ImagePath" class="d-block w-100" alt="...">
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="carousel-item">
+                                    <img src="@item.value.ImagePath" class="d-block w-100" alt="...">
+                                </div>
+                            }
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <!-- information product -->
+                <div class="container">
+                    <div class="row">
+                        <h3 class="article__content__title">Thông tin sản phẩm</h3>
+                        <div class="content-short" style="max-height:350px;overflow:hidden">
+                            @Html.Raw(Model.Product.Description)
+
+                        </div>
+                        <div class="row content-more">
+                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" style="box-shadow:0 -12px 40px #4d79bc; color:#2f80ed" type="button" class="btn-content-more btn btn-outline-primary">Xem thêm</button>
+                        </div>
+                        <div class="row pt-5 pb-5 ">
+                            @* <h3><a class="preventdefault" href="https://cdn.tgdd.vn/Products/Images/42/299033/iphone-15-pro-131023-034959.jpg" onclick="return false;"><img alt="iPhone 15 Pro Max Tổng quan" data-src="https://cdn.tgdd.vn/Products/Images/42/299033/iphone-15-pro-131023-034959.jpg" class=" w-100" style="font-size: 13px;" title="iPhone 15 Pro Max Tổng quan" src="https://cdn.tgdd.vn/Products/Images/42/299033/iphone-15-pro-131023-034959.jpg"></a></h3> *@
+                            <img src="@Model.Product.imagePath" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommend -->
+                <div class="row">
+                    <div class="boxrate rate-topzone card p-5 m-2 me-3">
+                        <h3 class="boxrate__title">
+                            Đánh giá @Model.Product.Name
+                        </h3>
+                        <div class="boxrate__top">
+                            <div class="box-star">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="point d-flex m-2">
+
+                                            @if (fullStars > 0)
+                                            {
+                                                <p class="fs-4 me-2" style="color: red; font-weight: bold;">@Model.CommentOverviewVm.AVGRatingStar</p>
+                                                @for (int i = 0; i < fullStars; ++i)
+                                                {
+                                                    <i class="bi bi-star-fill fs-3" style="color: orange;"></i>
+                                                }
+                                                @for (int i = fullStars; i < halfStars; ++i)
+                                                {
+                                                    <i class="bi bi-star-half fs-3" style="color: orange;"></i>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9 d-flex">
+                                        <span class="marked ">@Model.CommentOverviewVm.GrandTotalCount đánh giá</span>
+                                    </div>
+                                </div>
+
+                                <div class="timeline-star mb-2">
+
+                                    <div class="mb-1">
+                                        <span>5 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                        <span class="progress ">
+                                            <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count5Star%" aria-valuenow="@Model.CommentOverviewVm.Count5Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count5Star%</span>
+                                        </span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span> 4 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                        <span class="progress mb-1">
+
+                                            <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count4Star%" aria-valuenow="@Model.CommentOverviewVm.Count4Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count4Star%</span>
+                                        </span>
+                                    </div>
+
+                                    <div class="mb-1">
+                                        <span> 3 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                        <span class="progress">
+                                            <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count3Star%" aria-valuenow="@Model.CommentOverviewVm.Count3Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count3Star%</span>
+                                        </span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span> 2 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                        <span class="progress mb-1">
+
+                                            <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count2Star%" aria-valuenow="@Model.CommentOverviewVm.Count2Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count2Star%</span>
+                                        </span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span> 1 <i class="bi bi-star-fill me-2 voted"></i></span>
+                                        <span class="progress">
+                                            <span class="progress-bar bg-warning" role="progressbar" style="width: @Model.CommentOverviewVm.Count1Star%" aria-valuenow="@Model.CommentOverviewVm.Count1Star" aria-valuemin="0" aria-valuemax="100">@Model.CommentOverviewVm.Count1Star%</span>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card">
+                                @foreach (var item in Model.CommentOverviewVm.CommentVms)
+                                {
+                                    <div class="card-body">
+                                        <div class="d-flex flex-start align-items-center">
+                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                 src="~/Images/User/user-default-avatar.png" alt="avatar" width="60"
+                                                 height="60" />
+                                            <div>
+                                                <h6 class="fw-bold text-primary mb-1">@item.UserName</h6>
+                                                <p class="text-muted small mb-0">
+                                                    @item.Date.ToString("dd/MM/yyyy") : @item.Date.ToString("HH:mm:ss")
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2">
+                                            @for (int root = 1; root <= 5; root++)
+                                            {
+                                                <i class="fas fa-star @(item.Rating>=root?"voted":"un-voted") vote-star"></i>
+
+                                            }
+                                        </p>
+                                        <p class="mt-2">
+                                            @item.Content
+                                        </p>
+                                    </div>
+                                    <hr />
+                                }
+                                <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline active w-100 btn-view-more" data-param="@Model.Product.Id" autocomplete="off" aria-pressed="true">Xem @Model.CommentOverviewVm.GrandTotalCount đánh giá</button>
+
+                                        </div>
+                                        @* <div class="col-6">
+                                            <button type="button" class="btn btn-primary active w-100" data-bs-toggle="button" autocomplete="off" aria-pressed="true">Viết đánh giá</button>
+
+                                        </div> *@
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- right product -->
+            <div class="col-5">
+                <!-- Attribute Dynamic: Need check if here if is true attribute dynamic -->
+                @if (Model.Attributes != null)
+                {
+                    @foreach (var attribute in Model.Attributes)
+                    {
+                        if (attribute.AttributeName == "Biến thể")
+                        {
+                            @foreach (var value in attribute.ValueVms)
+                            {
+                                <div class="row ms-1 mt-4 mb-3 box-price">
+                                    <p class="box-price-present fs-4" id="selected-price-@value.Value" style="color: red; font-weight: bold">
+                                        @String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0}₫", @value.SalePrice)
+                                    </p>
+                                    <p class="box-price-present fs-4" hidden id="selected-quantity-@value.Value">
+                                        Số lượng: @value.Quantity
+                                    </p>
+                                    <p class="box-price-present fs-4" id="selected-tax-@value.Value" hidden>
+                                        Thuế: @value.Tax%
+                                    </p>
+                                    <div class="col-3">
+                                        <p class="box-price-percent"> <span class="label label--black">Trả góp 0%</span></p>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                        else
+                        {
+                            <div class="btn-group" aria-label="Size options">
+                                @foreach (var value in attribute.ValueVms)
+                                {
+                                    if (value.IsShow == true)
+                                    {
+                                        if (value.Quantity > 0)
+                                        {
+                                            <button type="button" class="btn btn-outline-primary m-2 ttd-btn"
+                                                    id="size-button-@value.Value"
+                                                    data-price="@value.SalePrice"
+                                                    data-quantity="@value.Quantity"
+                                                    data-tax="@value.Tax"
+                                                    data-id="@value.ProductAttributeId"
+                                                    onclick="updatePrice('@value.SalePrice','@value.AfterDiscountPrice','@value.Quantity')">
+                                                @value.Value
+                                            </button>
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        <button type="button" class="btn m-2" disabled>
+                                            @value.Value
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        }
+
+                    }
+
+                }
+
+                <!-- Address -->
+                <div>
+                    <!-- Price -->
+                    <div class="row ms-1 mt-4 mb-3 box-price align-items-center">
+                        <div style="flex:1" class="d-flex align-items-center">
+                            <p class="box-price-present fs-4" id="selected-oldprice" style="color: red; font-weight: bold">
+                                @*         @(Model.Product.Price.HasValue ? Model.Product.Price.Value.ToString("N0") + "₫" : "N/A") *@
+                            </p>
+                            <p class="box-price-present fs-4" id="selected-price" style="color: #888; font-weight: 400;font-size:14px!important;text-decoration:line-through;margin-left:10px">
+                                @*         @(Model.Product.Price.HasValue ? Model.Product.Price.Value.ToString("N0") + "₫" : "N/A") *@
+                            </p>
+
+                        </div>
+                        <div style="flex:1">
+                            <p class="box-price-present fs-4" id="selected-quantity" style="color: red; font-weight: 500; display:flex;align-items:baseline">
+                                @*         @(Model.Product.Price.HasValue ? Model.Product.Price.Value.ToString("N0") + "₫" : "N/A") *@
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="card">
+                        @if (Model.listPromotions != null)
+                        {
+                            @foreach (var promotion in Model.listPromotions)
+                            {
+                                <img src="@promotion.BannerUrl" alt="">
+                                <div class="card-body ">
+
+                                    <div class="row">
+                                        <!-- Promotion Details -->
+                                        <div class="col" style="margin-left:20px">
+                                            <h5 style="font-weight:600" class="card-title row ">@promotion.Name</h5>
+                                            <p class="card-text row">@promotion.Description</p>
+
+                                        </div>
+                                        <p class="card-text row "><small class="text-muted pt-2 pb-2 text-center">From: @promotion.From | To: @promotion.To</small></p>
+                                    </div>
+                                </div>
+                                break;
+                            }
+                        }
+                    </div>
+
+                    <!-- Sale -->
+
+                    <div class="row">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-warning col-12 p-4 addToCartBtn" disabled>Chọn @Model.Attributes[0].AttributeName.ToLower() trước khi thêm vào giỏ hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- callorder -->
+                    <div class="row text-center m-2">
+                        <p class="callorder">
+                            <i class="bi bi-telephone"></i>  Gọi đặt mua <a style="text-decoration: none;" href="tel:1900232461">1900 232 461</a> (7:30 - 22:00)
+                        </p>
+                    </div>
+                    <!-- Configruration Product -->
+                    <div class="row"><h3 class="parameter__title">Cấu hình @Model.Product.Name</h3></div>
+                    <h4>Đặc điểm sản phẩm</h4>
+                    <div class="parameter">
+                        <table class="table table-striped">
+                            @if (Model.listAttributes != null)
+                            {
+                                @foreach (var attributs in Model.listAttributes)
+                                {
+                                    @foreach (var values in attributs.attributeValues)
+                                    {
+                                        if (values.IsShow == true )
+                                        {
+                                            <tr>
+                                                <td class="col-4">@attributs.Name</td>
+                                                <td class="text-break">@values.Value</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            }
+
+                            <tr>
+                                <td>Năm ra mắt</td>
+
+                                <td>2022</td>
+                             @*    @foreach (var attribute in @Model.Attributes)
+                                {
+                                @foreach (var value in attribute.ValueVms)
+                                    {
+                                        if (value.)
+                                        {
+                                            
+                                        }
+                                        <td>@value.ReleaseYear</td>
+                                    }
+                                }   *@
+                            </tr>
+                            <tr>
+                                <td>Hãng</td>
+                                <td>@Model.Product.BrandName</td>
+                            </tr>
+                        </table>
+                        <div class="row text-center m-5">
+                            <!-- Scrollable modal -->
+                            @* <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#scrollableModal">
+                                Xem thêm cấu hình chi tiết
+                            </button> *@
+                            <div class="modal fade" id="scrollableModal" tabindex="-1" aria-labelledby="scrollableModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="scrollableModalLabel">Cấu hình chi tiết</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Long content to demonstrate scrolling -->
+                                            <div class="row"><h3 class="parameter__title">Cấu hình Điện thoại iPhone 15 Pro Max 256GB</h3></div>
+                                            <h4>Đặc điểm sản phẩm</h4>
+                                            <div class="parameter">
+
+                                                <table class="table table-striped">
+                                                    <tr>
+                                                        <td>Màn hình:</td>
+                                                        <td>OLED6.7"Super Retina XDR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Hệ điều hành:</td>
+                                                        <td>
+                                                            iOS 17
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Camera sau:</td>
+                                                        <td>Chính 48 MP & Phụ 12 MP, 12 MP</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Camera trước:</td>
+                                                        <td>12 MP</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Chip:</td>
+                                                        <td>Apple A17 Pro 6 nhân</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>RAM:            </td>
+                                                        <td>8 GB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Dung lượng lưu trữ:
+                                                        </td>
+                                                        <td>256 GB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>SIM:</td>
+                                                        <td>1 Nano SIM & 1 eSIMHỗ trợ 5G</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Pin, Sạc:</td>
+                                                        <td>4422 mAh20 W</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Hãng</td>
+                                                        <td>iPhone (Apple). Xem thông tin hãng</td>
+                                                    </tr>
+                                                </table>
+                                                <table class="table table-striped">
+                                                    <tr>
+                                                        <td>Màn hình:</td>
+                                                        <td>OLED6.7"Super Retina XDR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Hệ điều hành:</td>
+                                                        <td>
+                                                            iOS 17
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Camera sau:</td>
+                                                        <td>Chính 48 MP & Phụ 12 MP, 12 MP</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Camera trước:</td>
+                                                        <td>12 MP</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Chip:</td>
+                                                        <td>Apple A17 Pro 6 nhân</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>RAM:            </td>
+                                                        <td>8 GB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Dung lượng lưu trữ:
+                                                        </td>
+                                                        <td>256 GB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>SIM:</td>
+                                                        <td>1 Nano SIM & 1 eSIMHỗ trợ 5G</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Pin, Sạc:</td>
+                                                        <td>4422 mAh20 W</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Hãng</td>
+                                                        <td>iPhone (Apple). Xem thông tin hãng</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+</container>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mô tả sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding:40px 20% 20px 20%">
+                @Html.Raw(Model.Product.Description)
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+<script type="text/javascript">
+    var selectedTTD = 0;
+    $(document).ready(function () {
+        $('.btn-view-more').on('click', function (event) {
+            event.preventDefault();
+            var prodId = $(this).data('param');
+            console.log(prodId);
+            window.location.href = `ViewAllComment?id=${prodId}&pageIndex=${0}&ratingStar=${0}`
+        });
+    });
+
+
+    function updatePrice(price, oldprice, quantity) {
+        var formattedPrice = parseInt(price).toLocaleString('vi-VN') + '₫';
+        var formattedOldPrice = parseInt(oldprice).toLocaleString('vi-VN') + '₫';
+        document.getElementById('selected-price').innerText = formattedPrice;
+        document.getElementById('selected-oldprice').innerText = formattedOldPrice;
+        document.getElementById('selected-quantity').innerHTML = `<p style="color:#000;font-size:16px;font-weight:400;margin:0 8px 0 0">Còn lại:</p> ${quantity}`;
+    }
+    var ttdBtns = document.querySelectorAll(".ttd-btn")
+    for (var item of ttdBtns) {
+        item.addEventListener('click', (e) => {
+            console.log(e.target.getAttribute("data-id"))
+            for (var a of ttdBtns) {
+                a.style.border = "1px solid #0d6efd"
+            }
+            e.target.style.border = "2px solid red"
+            selectedTTD = e.target.getAttribute("data-id")
+            document.querySelector(".addToCartBtn").disabled = false
+            document.querySelector(".addToCartBtn").innerHTML = "Thêm vào giỏ hàng"
+        })
+    }
+
+    var contentShort = document.querySelector('.content-short');
+    var height = contentShort.offsetHeight;
+    if (height > 350) {
+        document.querySelector('.content-more').style.display = "none"
+    }
+    var btnContentMore = document.querySelector(".btn-content-more")
+    if (btnContentMore) {
+        btnContentMore.addEventListener('click', () => {
+
+        })
+    }
+    document.querySelector(".addToCartBtn").addEventListener("click", async () => await addToCart(selectedTTD))
+</script>
+<script src="~/js/cart/CartTest.js"></script>

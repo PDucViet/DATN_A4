@@ -1,0 +1,661 @@
+﻿@model DATN.Core.ViewModel.ProductVM.ProductEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<style>
+    .delete-button {
+        position: absolute;
+        top: -5px; /* Adjust to bring the button closer to the top */
+        left: 80%; /* Adjust to bring the button closer to the right */
+        border-radius: 50%;
+        padding: 0.1rem 0.1rem; /* Smaller padding */
+        font-size: 0.4rem; /* Smaller font size */
+        width: 15px; /* Smaller width */
+        height: 18px; /* Smaller height */
+        border: none;
+        cursor: pointer;
+        background-color: red;
+    }
+
+        .delete-button:hover {
+            background-color: #01b6f0;
+        }
+
+    .position-relative {
+        position: relative;
+    }
+</style>
+@* <h5>Sửa Product - Attribute - Value</h5> *@
+<hr />
+<div class="row">
+    <div class="col-md-8 ">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <div class="col-md-6 d-flex flex-column align-items-center">
+                  
+                    <div class="row justify-content-center">
+                        @if (Model.Images.Count > 0)
+                        {
+                            @foreach (var image in Model.Images)
+                            {
+                                <!-- Hình ảnh chính -->
+                                if (image.IsDefault)
+                                {
+                                    <div class="row justify-content-center mb-3">
+                                        <input type="hidden" name="ImageIds" value="@image.ImageId" />
+                                        <img src="@image.ImagePath" class="img-fluid w-100 h-auto" alt="Oculus VR" style="max-width: 300px;">
+                                    </div>
+                                }
+
+                                <!-- Hàng chứa các ảnh nhỏ -->
+                                if (!image.IsDefault)
+                                {
+                                    <div class="col-auto px-1 position-relative" style="width: 80px;">
+                                        <input type="hidden" name="ImageIds" value="@image.ImageId" />
+                                        <img src="@image.ImagePath" class="img-fluid" style="width:70px; height:50px;" alt="Oculus VR" />
+                                        <button type="button" class="delete-button btn btn-danger btn-sm" onclick="confirmDeleteImage(@image.ImageId)">x</button>
+
+                                    </div>
+                                }
+                                <input type="hidden" id="deletedImageIds" name="DeletedImageIds" value="" />
+                            }
+                        }
+                        else
+                        {
+                            <p>Sản phẩm không có hình ảnh phụ</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h3>Chi tiết sản phẩm</h3>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control"/>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <div class="overflow-auto" style="height: 320px;">
+                        <textarea asp-for="Description" id="editor" class="form-control input_content"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label asp-for="Status" class="control-label"></label>
+                            <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="BrandId" class="control-label"></label>
+                            <select asp-for="BrandId" class="form-control" asp-items="ViewBag.listBrand"></select>
+                            <span asp-validation-for="BrandId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="OriginId" class="control-label"></label>
+                            <select asp-for="OriginId" class="form-control" asp-items="ViewBag.listOrigin"></select>
+                            <span asp-validation-for="OriginId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultImage" class="control-label">Cập nhật ảnh chính sản phẩm</label>
+                        <input id="defaultImage" name="defaultImage" type="file" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="form-group">
+                        <label for="files" class="control-label">Cập nhật ảnh sản phẩm (Tối đa 6 ảnh)</label>
+                        <input id="files" name="files" type="file" class="form-control" multiple accept="image/*" />
+                        <small id="file-limit-warning" class="text-danger d-none">Bạn chỉ có thể chọn tối đa 10 ảnh.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group float-end mt-2">
+                <input type="submit" value="Save" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h3>List Attribute</h3>
+        <form id="listAttributesForm">
+            <div class="overflow-auto" style="height: 620px;">
+                <div id="listAttributeContainer">
+                    <!-- Dynamic attributes will be added here -->
+                </div>
+            </div>
+            <div class="mt-2">
+            <button class="btn btn-outline-primary" type="button" onclick="addDynamic()">Add Attribute</button>
+            <button class="btn btn-outline-success" type="button" onclick="submitDynamics()">Submit Attributes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Modal for confirming image deletion -->
+<div class="modal fade" id="deleteImageModal" tabindex="-1" aria-labelledby="deleteImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteImageModalLabel">Confirm Image Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this image?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (Model.Attributes != null)
+{
+    @foreach (var Variant in @Model.Attributes)
+    {
+        <div class="row">
+            <h3>Danh sách biến thể - @Variant.AttributeName</h3>
+            <input id="attributeId_@Variant.AttributeId" value="@Variant.AttributeId" hidden />
+            <form id="attributesForm">
+                <div class="overflow-auto" style="height: 400px;">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên biến thể</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập</th>
+                                <th>Giá bán</th>
+                                <th>Thuế</th>
+                                <th>Năm sản xuất</th>
+                                <th>Show bán</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="variant-list">
+                            <!-- Rows will be appended here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="float-end mt-2">
+                <button type="button" class="btn btn-outline-primary" onclick="addVariantRow()">Add Variant</button>
+                <button type="button" class="btn btn-outline-success" onclick="submitVariants('@Variant.AttributeId')">Submit Attributes</button>
+                </div>
+            </form>
+        </div>
+    }
+
+}
+else
+{
+    <div class="row">
+        <h3>Sản phẩm không có biến thể</h3>
+    </div>
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        // Dynamic
+        let attributeIndex = @((Model.Attributes != null) ? Model.Attributes.Count : 0);
+
+        function loadExistingLisstAttributes(listAttributes) {
+            if (!listAttributes['$values']) {
+                listAttributes['$values'] = [];
+            }
+            let container = document.getElementById('listAttributeContainer');
+            container.innerHTML = ''; // Clear container before appending new elements
+
+            listAttributes['$values'].forEach((attribute) => {
+                let attributeId = attribute.id;
+                let newAttribute = document.createElement('div');
+                newAttribute.classList.add('attribute');
+                newAttribute.id = `attribute_${attributeId}`;
+
+                $(newAttribute).attr("id", attributeId);
+
+                let attributeEnabled = attribute.isActive ? '' : 'disabled';
+                let attributeNameId = `attribute_name_${attributeId}`;
+
+                let valuesHtml = '';
+
+                attribute.attributeValues['$values'].forEach((value, valueIndex) => {
+                    let valueEnabled = value.isActive ? '' : 'disabled';
+                    // let valueId = `attribute_${attributeId}_value_${value.id}`;
+                    let valueId = value.atributeValueId;
+                    valuesHtml += `
+                                                                                            <div class="form-group2">
+                                                                                                        <input type="number" name="atributeValueIdDynamic" class="form-control" value="${value.atributeValueId}"hidden/>
+                                                                                                    <label>Giá trị thuộc tính</label>
+                                                                                                <input type="text" name="valuedynamic" class="form-control col-md-4" value="${value.value}" placeholder="Attribute Value" ${valueEnabled} required />
+                                                                                                <label>Hiển thị</label>
+                                                                                                        <input type="checkbox" name="isShowDynamic" ${value.isShow ? 'checked' : ''} onchange="toggleValueActive('${valueId}', this.checked)">
+                                                                                                <label>Trạng thái</label>
+                                                                                                <input type="checkbox" name="isActiveDynamic" ${value.isActive ? 'checked' : ''} onchange="toggleValueActive('${valueId}', this.checked)">
+                                                                                            </div>
+                                                                                    `;
+                    // <button type="button" class="btn btn-secondary" onclick="updateValue(${attributeId}, ${valueId})">Update</button>
+                });
+
+                newAttribute.innerHTML = `
+                                                                                    <div class="form-group" style="max-height: 500px; overflow-y: auto;">
+                                                                                                <label>Tên thuộc tính</label>
+                                                                                                                <input type="text" name="nameDynamic" class="form-control col-md-4" value="${attribute.name}" placeholder="Attribute Value"  required />
+                                                                                                            <input type="number" name="attributeIdDynamic" class="form-control" value="${attribute.id}" hidden />
+                                                                                    </div>
+                                                                                    <div class="attributeValues">
+                                                                                        ${valuesHtml}
+                                                                                    </div>
+
+                                                                                    <hr />
+                                                                                `;
+                // <input type="checkbox" id="attribute_active_${attributeId}" name="Attributes[${attributeId}].IsActive" ${attribute.isActive ? 'checked' : ''} onchange="toggleAttributeActive('${attributeNameId}', this.checked)">
+                // <label for="attribute_active_${attributeId}">Status: ${attribute.isActive ? 'Active' : 'Inactive'}</label>
+                //  <button type="button" class="btn btn-secondary" onclick="updateAttribute(${attributeId})">Update</button>
+                container.appendChild(newAttribute);
+            });
+        }
+
+
+        function addDynamic() {
+            let container = document.getElementById('listAttributeContainer');
+
+            // Create a new attribute div
+            let newAttribute = document.createElement('div');
+            newAttribute.classList.add('attribute');
+            newAttribute.id = `attribute_${Date.now()}`; // Unique ID based on timestamp
+
+            // Create the HTML for the attribute
+            let attributeHtml = `
+                                <div class="form-group" style="max-height: 500px; overflow-y: auto;">
+                                    <label>Attribute Name</label>
+                                            <input type="text" name="nameDynamic" class="form-control col-md-4" placeholder="Enter attribute name" required />
+                                    <button class="btn btn-danger" type="button" onclick="removeDynamic(this)">Remove Attribute</button>
+                                </div>
+                                <div class="attributeValue">
+                                    <div class="form-group2">
+                                        <input type="text" name="valuedynamic" class="form-control col-md-4" placeholder="Enter attribute value" required />
+                                        <label>Hiển thị</label>
+                                        <input type="checkbox" name="isShowDynamic" />
+                                        <label>Trạng thái</label>
+                                        <input type="checkbox" name="isActiveDynamic" />
+                                    </div>
+                                </div>
+                                <hr />
+                            `;
+
+            newAttribute.innerHTML = attributeHtml;
+            container.appendChild(newAttribute);
+        }
+
+        function removeDynamic(button) {
+            let attributeDiv = button.closest('.attribute');
+            attributeDiv.remove();
+        }
+
+
+        function submitDynamics() {
+            let dynamicList = document.getElementById('listAttributeContainer');
+            let dynamics = [];
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+            dynamicList.querySelectorAll('.attribute').forEach((attributeDiv) => {
+                // Get attribute ID and name
+                let attributeId = attributeDiv.querySelector(`input[name="attributeIdDynamic"]`)?.value || null;
+                let nameDynamic = attributeDiv.querySelector(`input[name="nameDynamic"]`)?.value || null;
+
+                // Get values from form-group2
+                let formGroup2 = attributeDiv.querySelector('.form-group2');
+                let attributeValueId = formGroup2.querySelector(`input[name="atributeValueIdDynamic"]`)?.value || null;
+                let value = formGroup2.querySelector(`input[name="valuedynamic"]`)?.value || null;
+                let isShow = formGroup2.querySelector(`input[name="isShowDynamic"]`)?.checked || false;
+                let isActive = formGroup2.querySelector(`input[name="isActiveDynamic"]`)?.checked || false;
+
+                // Check for empty fields
+                if (!nameDynamic) {
+                    showError(attributeDiv.querySelector(`input[name="nameDynamic"]`), "Name cannot be empty");
+                    isValid = false;
+                }
+                // if (!attributeValueId) {
+                //     showError(formGroup2.querySelector(`input[name="atributeValueIdDynamic"]`), "Attribute Value ID cannot be empty");
+                //     isValid = false;
+                // }
+                if (!value) {
+                    showError(formGroup2.querySelector(`input[name="valuedynamic"]`), "Value cannot be empty");
+                    isValid = false;
+                }
+
+                let dynamic = {
+                    AttributeId: attributeId,
+                    name: nameDynamic,
+                    AttributeValueId: attributeValueId,
+                    Value: value,
+                    IsShow: isShow,
+                    IsActive: isActive
+                };
+
+                dynamics.push(dynamic);
+            });
+
+            if (!isValid) {
+                return; // Stop form submission if any field is empty
+            }
+
+            // Send JSON data to the API
+            fetch('https://localhost:7095/api/EAV/UpdateListDynamicOfProduct/productId?productId=' + @Model.Id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dynamics)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        //Variant
+        function loadExistingAttributes(attributes) {
+            if (!attributes['$values']) {
+                attributes['$values'] = [];
+            }
+            let variantList = document.getElementById('variant-list');
+            variantList.innerHTML = ''; // Clear table before appending new rows
+
+            attributes['$values'].forEach((attribute, attributeIndex) => {
+                let attributeId = attribute.attributeId;
+                let stt = 1; // Initialize STT (Số thứ tự)
+
+                attribute.valueVms['$values'].forEach((value, valueIndex) => {
+                    let valueId = value.atributeValueId;
+                    let quantityId = value.productAttributeId;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                                        <td>${stt}</td>
+                                                        <input type="number" name="atributeValueId" class="form-control" value="${value.atributeValueId}" hidden  />
+                                                        <input type="number" name="productAttributeId" class="form-control" value="${value.productAttributeId}" hidden />
+                                                        <td><input type="text"  name="value" class="form-control" value="${value.value}" placeholder="Attribute Value" ${value.isActive ? '' : 'disabled'} required /></td>
+                                                        <td><input type="number"  name="quantity" class="form-control" value="${value.quantity}" placeholder="Quantity" ${value.isActive ? '' : 'disabled'} required min="1" /></td>
+                                                                <td><input type="number"  name="puscharPrice" class="form-control" value="${value.puscharPrice}" placeholder="PuscharPrice" ${value.isActive ? '' : 'disabled'} required min="0" /></td>
+                                                                <td><input type="number"  name="salePrice" class="form-control" value="${value.salePrice}" placeholder="SalePrice" ${value.isActive ? '' : 'disabled'} required min="0" /></td>
+                                                                <td><input type="number" name="tax" class="form-control" value="${value.tax}" placeholder="Tax" ${value.isActive ? '' : 'disabled'} required min="0" /></td>
+                                                                <td><input type="number" name="releaseYear" class="form-control" value="${value.releaseYear}" placeholder="ReleaseYear" ${value.isActive ? '' : 'disabled'} required min="0" /></td>
+                                                        <td><input type="checkbox" name="isShow" ${value.isShow ? 'checked' : ''} "></td>
+                                                        <td><input type="checkbox" name="isActive" ${value.isActive ? 'checked' : ''} "></td>
+                                                    `;
+
+                    // <td><button class="btn btn-secondary btn-sm" onclick="updateValue(${attributeId}, ${valueId})">Update</button></td>
+                    // <td><button class="btn btn-danger btn-sm delete-variant-row">Delete</button></td>
+                    variantList.appendChild(row);
+
+                    // Increment STT for the next row
+                    stt++;
+
+                    // Event listener for the delete button
+                    // row.querySelector('.delete-variant-row').addEventListener('click', function () {
+                    //     row.remove();
+                    //     updateSTT();
+                    // });
+                });
+            });
+        }
+
+        // Initialize STT based on existing rows
+
+
+        function addVariantRow() {
+            const variantList = document.getElementById('variant-list');
+
+            var stt = variantList.querySelectorAll('tr').length + 1;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                                <td>${stt}</td>
+                                <input type="number" name="atributeValueId" class="form-control" value="null" hidden />
+                                        <input type="number" name="productAttributeId" class="form-control" value="null" hidden />
+                                <td><input type="text" class="form-control" name="value" placeholder="Attribute Value" required /></td>
+                                <td><input type="number" class="form-control" name="quantity" value="10" required min="1" /></td>
+                                <td><input type="number" class="form-control" name="puscharPrice" value="10000000" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="salePrice" value="11000000" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="tax" value="10" required min="0" /></td>
+                                <td><input type="number" class="form-control" name="releaseYear" value="${new Date().getFullYear()}" required min="0" /></td>
+                                <td><input type="checkbox" name="isShow" checked /></td>
+                                <td><input type="checkbox" name="isActive" checked /></td>
+                                <td><button class="btn btn-danger btn-sm delete-variant-row">Delete</button></td>
+                            `;
+
+            variantList.appendChild(row);
+
+            // Increment STT for the next row
+            stt++;
+
+            // Event listener for the delete button
+            row.querySelector('.delete-variant-row').addEventListener('click', function () {
+                row.remove();
+                updateSTT();
+            });
+        }
+
+        function updateSTT() {
+            const rows = document.querySelectorAll('#variant-list tr');
+            let currentStt = 1; // Initialize a local STT for updating rows
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = currentStt++;
+            });
+
+            // Update the global STT variable based on the number of rows
+            stt = rows.length + 1;
+        }
+
+        // Load existing attributes on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadExistingAttributes(@Html.Raw(Json.Serialize(Model.Attributes)));
+            loadExistingLisstAttributes(@Html.Raw(Json.Serialize(Model.listAttributes)));
+        }
+        );
+
+        function submitVariants(attributeId) {
+            let variantList = document.getElementById('variant-list');
+            let variants = [];
+            let isValid = true; // Flag to track form validity
+
+            variantList.querySelectorAll('tr').forEach((row, index) => {
+                let value = row.querySelector(`input[name^="value"]`);
+                let quantity = row.querySelector(`input[name^="quantity"]`);
+                let puscharPrice = row.querySelector(`input[name^="puscharPrice"]`);
+                let salePrice = row.querySelector(`input[name^="salePrice"]`);
+                let tax = row.querySelector(`input[name^="tax"]`);
+                let releaseYear = row.querySelector(`input[name^="releaseYear"]`);
+
+                // Reset previous error messages
+                clearErrors(row);
+
+                // // Validation logic for value field (required check)
+                // if (!value.value.trim()) {
+                //     showError(value, "This field is required");
+                //     isValid = false;
+                // }
+
+                // Check for empty fields
+                if (!value.value.trim()) {
+                    showError(value, "This field is required");
+                    isValid = false;
+                }
+                     
+                if (!quantity.value.trim()) {
+                    showError(quantity, `Quantity is required`);
+                    isValid = false;
+                } else if (parseFloat(quantity.value) <= 0) {
+                    showError(quantity, `Quantity must be greater than 0`);
+                    isValid = false;
+                }
+
+                if (!puscharPrice.value.trim()) {
+                    showError(puscharPrice, `Puschar is required`);
+                    isValid = false;
+                } else if (parseFloat(puscharPrice.value) <= 0) {
+                    showError(puscharPrice, `Puschar must be greater than 0`);
+                    isValid = false;
+                }
+
+                if (!salePrice.value.trim()) {
+                    showError(salePrice, `SalePrice is required`);
+                    isValid = false;
+                } else if (parseFloat(salePrice.value) <= 0) {
+                    showError(salePrice, `SalePrice must be greater than 0`);
+                    isValid = false;
+                }
+
+                if (!tax.value.trim()) {
+                    showError(tax, `Tax is required`);
+                    isValid = false;
+                } else if (parseFloat(tax.value) <= 0) {
+                    showError(tax, `Tax must be greater than 0`);
+                    isValid = false;
+                }
+
+                const currentYear = new Date().getFullYear();
+                if (!releaseYear.value.trim()) {
+                    showError(releaseYear, `ReleaseYear is required`);
+                    isValid = false;
+                } else if (parseInt(releaseYear.value) < 1900 || parseInt(releaseYear.value) > currentYear) {
+                    showError(releaseYear, `ReleaseYear must be between 1900 and ${currentYear}`);
+                    isValid = false;
+                }
+
+                let variant = {
+                    AttributeId: attributeId,
+                    AttributeValueId: row.querySelector(`input[name^="atributeValueId"]`)?.value || null,
+                    productAttributeId: row.querySelector(`input[name^="productAttributeId"]`)?.value || null,
+                    Value: value.value || null,
+                    Quantity: parseInt(quantity.value, 10) || 0,
+                    PuscharPrice: parseFloat(puscharPrice.value) || 0,
+                    SalePrice: parseFloat(salePrice.value) || 0,
+                    Tax: parseFloat(tax.value) || 0,
+                    ReleaseYear: parseInt(releaseYear.value, 10) || 0,
+                    IsShow: row.querySelector(`input[name^="isShow"]`)?.checked || false,
+                    IsActive: row.querySelector(`input[name^="isActive"]`)?.checked || false
+                };
+
+                variants.push(variant);
+            });
+
+            if (!isValid) {
+                return; // Prevent submission if form is not valid
+            }
+          
+
+            // Gửi dữ liệu JSON tới API - https://localhost:7095/api/EAV/UpdateListVariantOfProduct/productId
+
+            fetch('https://localhost:7095/api/EAV/UpdateListVariantOfProduct/productId?productId=' + @Model.Id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(variants)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', variants);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function showError(input, message) {
+            const error = document.createElement('span');
+            error.className = 'error-message';
+            error.style.color = 'red';
+            error.textContent = message;
+            input.parentNode.appendChild(error);
+        }
+
+        function clearErrors(row) {
+            row.querySelectorAll('.error-message').forEach(error => error.remove());
+        }
+
+        function validateNumberField(input) {
+            if (!input.value.trim()) {
+                showError(input, `Trường này là bắt buộc`);
+                return false;
+            } else if (parseFloat(input.value) <= 0) {
+                showError(input, `Phải lớn > 0`);
+               return false;
+            }
+        }
+
+    </script>
+    @*  Limit update Image *@
+    <script>
+        document.getElementById('files').addEventListener('change', function () {
+            const fileInput = this;
+            const maxFiles = 6;
+            const warningMessage = document.getElementById('file-limit-warning');
+
+            if (fileInput.files.length > maxFiles) {
+                warningMessage.classList.remove('d-none');
+                fileInput.value = ''; // Reset the file input
+            } else {
+                warningMessage.classList.add('d-none');
+            }
+        });
+        //Xoá image
+        let imageIdToDelete = null;
+
+        function confirmDeleteImage(imageId) {
+            imageIdToDelete = imageId;
+            $('#deleteImageModal').modal('show');
+        }
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+            if (imageIdToDelete !== null) {
+                deleteImage(imageIdToDelete);
+            }
+        });
+        //https://localhost:7095/api/Images/Delete/500
+        function deleteImage(imageId) {
+            fetch(`https://localhost:7095/api/Images/Delete/${imageId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page to see the changes
+                        location.reload();
+                    } else {
+                        alert('Failed to delete the image.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <script>
+        CKSource.Editor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

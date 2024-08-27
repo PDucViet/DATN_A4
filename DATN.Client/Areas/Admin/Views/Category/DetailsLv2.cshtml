@@ -1,0 +1,54 @@
+﻿@model DATN.Core.ViewModel.CategoryVM.CategoryVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Danh mục</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Edit" id="category-form" asp-controller="Category" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Tên </label>
+                    <input asp-for="Name" class="form-control" readonly />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="5" readonly> </textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Level" class="control-label">Level </label>
+                    <input asp-for="Level" class="form-control" readonly />
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsVisibleDisplay" class="control-label">IsVisible</label>
+                    <input asp-for="IsVisibleDisplay" class="form-control" readonly />
+                    <span asp-validation-for="IsVisibleDisplay" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsOnlistDisplay" class="control-label">IsOnList</label>
+                    <input asp-for="IsOnlistDisplay" class="form-control" readonly />
+                    <span asp-validation-for="IsOnlistDisplay" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ParentCategoryId" class="control-label">ParentId </label>
+                    <input asp-for="ParentCategoryId" class="form-control" readonly />
+                    <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <a asp-action="CategoryLv2" asp-controller="Category" class="btn btn-secondary my-4">Trở lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

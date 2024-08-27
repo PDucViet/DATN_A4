@@ -1,0 +1,129 @@
+﻿@using DATN.Core.ViewModel.BrandVM
+@using DATN.Core.ViewModel.CategoryVM
+@using DATN.Core.ViewModel.TimeRangeVM
+@using Newtonsoft.Json
+@inject HttpClient httpClient
+@{
+    @model List<DATN.Core.ViewModel.BrandVM.BrandVM>
+    List<CategoryVM> CatesVM = new List<CategoryVM>();
+    List<TimeRangeVM> TimeRangeVM = new List<TimeRangeVM>();
+    int selectedCateId = 0;
+    // if (ViewBag.parrentCateId!=0)
+    // {
+    //     var dataCate = await httpClient.GetAsync($"https://localhost:7095/api/Category/GetAllCategoryByLevel1?cateLevel1Id={ViewBag.parrentCateId}");
+    //     dataCate.EnsureSuccessStatusCode();
+    //     var cateResponseContent = await dataCate.Content.ReadAsStringAsync();
+    //     CatesVM = JsonConvert.DeserializeObject<List<CategoryVM>>(cateResponseContent);
+    //     selectedCateId = ViewBag.cateId; 
+    // }
+    // else
+    // {
+        var dataCate = await httpClient.GetAsync($"https://localhost:7095/api/Category/GetAllCategoryByLevel1?cateLevel1Id={ViewBag.cateId}");
+        dataCate.EnsureSuccessStatusCode();
+        var cateResponseContent = await dataCate.Content.ReadAsStringAsync();
+        CatesVM = JsonConvert.DeserializeObject<List<CategoryVM>>(cateResponseContent);
+    // }
+
+    var listPriceRangeResponse = await httpClient.GetAsync($"https://localhost:7095/api/TimeRange/GetByCateId?CateId={ViewBag.cateId}");
+    listPriceRangeResponse.EnsureSuccessStatusCode();
+    var listPriceRangeContent = await listPriceRangeResponse.Content.ReadAsStringAsync();
+    TimeRangeVM = JsonConvert.DeserializeObject<List<TimeRangeVM>>(listPriceRangeContent);
+
+    // var dataBrand = await httpClient.PostAsJsonAsync($"https://localhost:7095/api/Category/GetAllBrandByLevel2", CatesVM);
+    // dataBrand.EnsureSuccessStatusCode();
+    // var responseContent = await dataBrand.Content.ReadAsStringAsync();
+    // var BrandsVM = JsonConvert.DeserializeObject<List<BrandVM>>(responseContent);
+}
+@* <h6>Hãng</h6>
+<div class="row list-brand d-flex flex-wrap mt-3 mb-3 ms-1 me-1">
+    @foreach (var brand in BrandsVM)
+    {
+        <button class="col-ms-3 btn btn-brand" onclick="toggleSelectedFilter('brand', '@brand.BrandId', '@brand.Name')">
+            <img src="@Url.Content(brand.ImageUrl)" alt="@brand.Name Brand Image" class="brandImg">
+        </button>
+    }
+</div>
+<h6>Danh mục</h6> *@
+
+<!-- Filter -->
+<style>
+    .custom-dropdown-menu{
+
+    }
+</style>
+<div class="align-content-center d-flex mt-3 ms-3 me-3">
+    <div class="dropdown-filter">
+        <button class="btn-filter" type="button" id="buttonFilter">
+            <i class="bi bi-funnel ms-2"></i>
+            <span class="me-2">Bộ lọc</span>
+        </button>
+        <ul class="custom-dropdown-menu justify-content-center align-content-center" id="dropdownMenu">
+            <li class="close-btn">
+                <button class="btn-close-itemFilter" id="btnCloseDropdown" aria-label="Close">
+                    <i class="bi bi-x"></i>
+                </button>
+            </li>
+            <li class="selected-items w-100">
+                <h6>Đã chọn: </h6>
+                <div class="selected-filters d-flex flex-wrap mt-2 mb-2"></div>
+                <div class="border-top mt-3"></div>
+            </li>
+            @* <li class="brand w-100">
+                <h6 class="pt-1">Hãng</h6>
+
+                <div style="gap:10px;margin:0" class="row list-brand d-flex flex-wrap mt-3 mb-3 ms-1 me-1">
+                    @foreach (var brand in BrandsVM)
+                    {
+                        <button class="col-ms-3 btn btn-brand" onclick="toggleSelectedFilter('brand', '@brand.BrandId', '@brand.Name')">
+                            <img style="width:30%" src="@Url.Content(brand.ImageUrl)" alt="@brand.Name Brand Image" class="brandImg">
+                        </button>
+                    }
+                </div>
+                <!-- Các hàng tiếp theo -->
+                <div class="border-top mt-3"></div>
+            </li> *@
+            <li class="brand w-100">
+                <h6 class="pt-1">Loại sản phẩm</h6>
+
+                <div style="gap:10px" class="row list-brand d-flex flex-wrap 00000000+++++++++++++++++++++++++mt-3 mb-3 ms-1 me-1">
+                    @foreach (var cate in CatesVM)
+                    {
+                        <button class="col-ms-3 btn btn-brand" onclick="toggleSelectedFilter('cate', '@cate.Id', '@cate.Name')">
+                            @cate.Name
+                        </button>
+                    }
+                </div>
+                <!-- Các hàng tiếp theo -->
+                <div class="border-top mt-3"></div>
+            </li>
+            <li class="price w-100">
+                <div class="row mt-2">
+                    <div class="col">
+                        <h6 class="pt-1">Giá</h6>
+                    </div>
+                </div>
+                <div class="row" style="gap:10px">
+                    @foreach (var item in TimeRangeVM)
+                    {
+                        <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '@((int)(item.MinPrice))-@((int)(item.MaxPrice))', '@item.Name')">@item.Name</button>
+                    }
+                    @* <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '0-5000000', 'Dưới 5 triệu')">Dưới 5 triệu</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '5000000-7000000', 'Từ 5tr - 7tr')">Từ 5tr - 10tr</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '10000000-15000000', 'Từ 10tr - 15tr')">Từ 10tr - 15tr</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '15000000-30000000', 'Từ 15tr - 30tr')">Từ 15tr - 30tr</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '30000000-50000000', 'Từ 30tr - 50tr')">Từ 30tr - 50tr</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '50000000-85000000', 'Từ 50tr - 85tr')">Từ 50tr - 85tr</button>
+                    <button class="col btn btn-brand" style="margin: 0 6px" onclick="toggleSelectedFilter('price', '85000000-3500000000', 'Trên 85tr')">Trên 85tr</button> *@
+                </div>
+            </li>
+            <li class="w-100 text-center">
+                <button class="btn-primary" onclick="applyFilter()">Lọc sản phẩm</button>
+            </li>
+        </ul>
+    </div>
+    <div />
+</div>
+
+<script>
+    
+</script>
